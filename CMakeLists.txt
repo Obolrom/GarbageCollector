@@ -3,4 +3,4 @@ project(GarbageCollector C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_executable(GarbageCollector main.c)
+add_executable(GarbageCollector main.c virtual_machine.h virtual_machine.c)
