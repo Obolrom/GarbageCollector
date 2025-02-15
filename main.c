@@ -1,6 +1,13 @@
 #include <stdio.h>
 #include <string.h>
 #include "virtual_machine.h"
+#include "vm_object.h"
+
+typedef struct CustomType {
+    int test1;
+    long test2;
+    short test3;
+} Data;
 
 int main() {
     VM* vm = createVirtualMachine();
@@ -8,23 +15,37 @@ int main() {
     int number = 500;
     float pi = 3.14f;
     short littleNum = 120;
+    char test[] = "test data :)";
+    Data data = { 255, 0xdeadbeaf, 18 };
 
-    memcpy(vm->heap->memory, &number, sizeof(int));
-    memcpy(vm->heap->memory + sizeof(int), &pi, sizeof(int));
-    memcpy(vm->heap->memory + sizeof(int) + sizeof(float), &littleNum, sizeof(short));
+    HeapObj* obj1 = createObject(vm, sizeof(number), &number);
+    HeapObj* obj2 = createObject(vm, sizeof(pi), &pi);
+    HeapObj* obj3 = createObject(vm, sizeof(littleNum), &littleNum);
+    HeapObj* obj4 = createObject(vm, sizeof(test), &test);
+    HeapObj* obj5 = createObject(vm, sizeof(data), &data);
+    HeapObj* obj6 = createObject(vm, sizeof(data), &data);
 
-    printf("1. %p\n", vm->heap->memory);
-    printf("1. %d\n", *(int *)(vm->heap->memory));
-    printf("2. %p\n", vm->heap->memory + sizeof(int));
-    printf("2. %f\n", *(float *)(vm->heap->memory + sizeof(int)));
-    printf("3. %p\n", vm->heap->memory + sizeof(int) + sizeof(float));
-    printf("3. %d\n", *(short *)(vm->heap->memory + sizeof(int) + sizeof(float)));
+    printf("obj1: %p\n", (void*)obj1->data);
+    printf("obj1: %d\n", *(int*)(obj1->data));
 
-    printf("\nraw bytes\n");
-    for (int i = 0; i < 8; ++i) {
-        printf("%p: %02x\n", vm->heap->memory + i, vm->heap->memory[i]);
-    }
-    printf("\n");
+    printf("obj2: %p\n", (void*)obj2->data);
+    printf("obj2: %f\n", *(float *)(obj2->data));
+
+    printf("obj3: %p\n", (void*)obj3->data);
+    printf("obj3: %d\n", *(short*)(obj3->data));
+
+    printf("obj4: %p\n", (void*)obj4->data);
+    printf("obj4: %s\n\n", (char*)(obj4->data));
+
+    printf("obj5: %p\n", (void*)obj5->data);
+    printf("obj5: %d\n", ((Data*)(obj5->data))->test1);
+    printf("obj5: %lx\n", ((Data*)(obj5->data))->test2);
+    printf("obj5: %d\n\n", ((Data*)(obj5->data))->test3);
+
+    printf("obj6: %p\n", (void*)obj6->data);
+    printf("obj6: %d\n", ((Data*)(obj6->data))->test1);
+    printf("obj6: %lx\n", ((Data*)(obj6->data))->test2);
+    printf("obj6: %d\n", ((Data*)(obj6->data))->test3);
 
     return 0;
 }
