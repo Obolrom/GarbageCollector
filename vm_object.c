@@ -9,7 +9,7 @@ static size_t offset = 0;
 HeapObj* createObject(VM* vm, size_t dataSize, void* data) {
     size_t objectSize = sizeof(HeapObj) + dataSize;
     HeapObjMarker marker = CREATED;
-    HeapObj* objectStartPtr = (HeapObj*) (vm->heap->memory + offset);
+    HeapObj* objectStartPtr = findFreeBlockAddress(vm->heap, objectSize);
     objectStartPtr->objectSize = objectSize;
     objectStartPtr->dataSize = dataSize;
     objectStartPtr->marker = marker;

@@ -19,7 +19,13 @@ void test1(VM* vm);
 int main() {
     VM* vm = createVirtualMachine();
 
+    printShortHeapStats(vm->heap);
+    printFullHeapStats(vm->heap);
+
     test1(vm);
+
+    printShortHeapStats(vm->heap);
+    printFullHeapStats(vm->heap);
 
     return 0;
 }
