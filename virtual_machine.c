@@ -120,6 +120,11 @@ uint32_t getFreeHeapBlocksAmount(VmHeap* heap) {
     return heap->blockAmount - getOccupiedHeapBlocksAmount(heap);
 }
 
+size_t getFreeMemoryAmount(VM* vm) {
+    uint32_t freeHeapBlocks = vm->heap->blockAmount - getOccupiedHeapBlocksAmount(vm->heap);
+    return freeHeapBlocks * vm->heapBlockSize;
+}
+
 void printShortHeapStats(VmHeap* heap) {
     printf("--------------------------------\n");
     printf("Blocks (occupied / all): %d / %d\n", getOccupiedHeapBlocksAmount(heap), heap->blockAmount);
@@ -179,4 +184,40 @@ void walkThroughHeap(VM* vm) {
     printf("Total occupied memory: %zu bytes\n", actualOccupiedMemory);
     printf("Total allocated blocks memory: %zu bytes\n", totalBlocksOccupiedMemory);
     printf("Memory fragmentation: %zu bytes\n", totalBlocksOccupiedMemory - actualOccupiedMemory);
+}
+
+size_t getUnusedMemoryAmountForTakenHeapBlocks(VM* vm) {
+    VmHeap* heap = vm->heap;
+    size_t currentBlockIndex = 0;
+    size_t actualOccupiedMemory = 0;
+    size_t totalBlocksOccupiedMemory = 0;
+
+    while (currentBlockIndex < heap->blockAmount) {
+        VmHeapMemBlock* currentBlock = heap->blocks[currentBlockIndex];
+        if (currentBlock == NULL) {
+            printf("Error: NULL block at index %zu\n", currentBlockIndex);
+            break;
+        }
+
+        if (currentBlock->busyIndicator == BI_RED) {
+            HeapObj* object = (HeapObj*)
+                    ((uint8_t *)heap->memory + (currentBlock->position * vm->heapBlockSize));
+
+            if (object->objectSize == 0 || object->objectSize > vm->heapSize) {
+                printf("Error: Invalid objectSize at block %zu\n", currentBlockIndex);
+                break;
+            }
+
+            actualOccupiedMemory += object->objectSize;
+
+            size_t consumedBlocks = (object->objectSize + vm->heapBlockSize - 1) / vm->heapBlockSize;
+            totalBlocksOccupiedMemory += consumedBlocks * vm->heapBlockSize;
+
+            currentBlockIndex += consumedBlocks;
+        } else {
+            currentBlockIndex++;
+        }
+    }
+
+    return totalBlocksOccupiedMemory - actualOccupiedMemory;
 }

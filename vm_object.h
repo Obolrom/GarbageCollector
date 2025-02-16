@@ -22,3 +22,5 @@ typedef struct HeapObject HeapObj;
 HeapObj* createObject(VM* vm, size_t dataSize, void* data);
 
 VmRetCode deleteObject(VM* vm, HeapObj* object);
+
+void compactHeap(VM* vm, void (*func)(HeapObj*));

@@ -52,3 +52,7 @@ void printShortHeapStats(VmHeap* heap);
 void printFullHeapStats(VmHeap* heap);
 
 void walkThroughHeap(VM* vm);
+
+size_t getFreeMemoryAmount(VM* vm);
+
+size_t getUnusedMemoryAmountForTakenHeapBlocks(VM* vm);

@@ -1,4 +1,6 @@
 #include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include "virtual_machine.h"
 #include "vm_object.h"
 #include "config.h"
@@ -9,6 +11,14 @@ HeapObj* createObject(VM* vm, size_t dataSize, void* data) {
     size_t objectSize = sizeof(HeapObj) + dataSize;
     HeapObjMarker marker = CREATED;
     HeapObj* objectStartPtr = findFreeBlockAddress(vm, objectSize);
+    if (objectStartPtr == NULL) {
+        size_t freeHeapBytes = getFreeMemoryAmount(vm);
+        if (freeHeapBytes <= objectSize) {
+            return NULL;
+        }
+        compactHeap(vm, NULL);
+        return createObject(vm, dataSize, data);
+    }
     objectStartPtr->objectSize = objectSize;
     objectStartPtr->dataSize = dataSize;
     objectStartPtr->marker = marker;
@@ -47,4 +57,42 @@ VmRetCode deleteObject(VM* vm, HeapObj* object) {
     }
 
     return VM_RC_SUC_OBJ_DELETED;
+}
+
+void compactHeap(VM* vm, void (*func)(HeapObj*)) {
+    VmHeap* heap = vm->heap;
+    size_t currentBlockIndex = 0;
+    void* temp = malloc(sizeof(uint8_t) * 100);
+
+    while (currentBlockIndex < heap->blockAmount) {
+        VmHeapMemBlock* currentBlock = heap->blocks[currentBlockIndex];
+        if (currentBlock == NULL) {
+            printf("Error: NULL block at index %zu\n", currentBlockIndex);
+            break;
+        }
+
+        if (currentBlock->busyIndicator == BI_RED) {
+            HeapObj* object = (HeapObj*)
+                    ((uint8_t *)heap->memory + (currentBlock->position * vm->heapBlockSize));
+            memcpy(temp, object->data, object->dataSize);
+            size_t dataSize = object->dataSize;
+            deleteObject(vm, object);
+            object = createObject(vm, dataSize, temp);
+            if (func != NULL) {
+                func(object);
+            }
+
+            if (object->objectSize == 0 || object->objectSize > vm->heapSize) {
+                printf("Error: Invalid objectSize at block %zu\n", currentBlockIndex);
+                break;
+            }
+
+            size_t consumedBlocks = (object->objectSize + vm->heapBlockSize - 1) / vm->heapBlockSize;
+            currentBlockIndex += consumedBlocks;
+        } else {
+            currentBlockIndex++;
+        }
+    }
+
+    free(temp);
 }
