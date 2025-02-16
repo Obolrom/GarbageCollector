@@ -1,11 +1,8 @@
 #include <stdint.h>
 
-static const uint32_t VM_HEAP_SIZE = 4000;
-static const uint32_t VM_HEAP_BLOCK_SIZE = 32;
-
 typedef enum HeapMemoryBlockBusyIndicator {
-    GREEN = 0,
-    RED = 1,
+    BI_GREEN = 0,
+    BI_RED = 1,
 } BusyIndicator;
 
 typedef struct HeapMemoryBlock {
@@ -26,18 +23,22 @@ typedef struct StackMemory {
 typedef struct VirtualMachine {
     VmHeap* heap;
     VmStack* stack;
+    uint32_t heapSize;
+    uint32_t heapBlockSize;
 } VM;
 
-VM* createVirtualMachine();
+VM* createVirtualMachine(uint32_t vmHeapSize, uint32_t vmHeapBlockSize);
 
-VmHeap* createVmHeap();
+VmHeap* createVmHeap(VM* vm);
 
 uint32_t getOccupiedHeapBlocksAmount(VmHeap* heap);
 
 uint32_t getFreeHeapBlocksAmount(VmHeap* heap);
 
-void* findFreeBlockAddress(VmHeap* heap, size_t objectSize);
+void* findFreeBlockAddress(VM* vm, size_t objectSize);
 
 void printShortHeapStats(VmHeap* heap);
 
 void printFullHeapStats(VmHeap* heap);
+
+void walkThroughHeap(VM* vm);
