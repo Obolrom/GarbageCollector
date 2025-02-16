@@ -1,5 +1,11 @@
 #include <stdint.h>
 
+typedef enum VirtualMachineReturnCodes {
+    VM_RC_ERROR_OBJ_ALREADY_DELETED,
+
+    VM_RC_SUC_OBJ_DELETED,
+} VmRetCode;
+
 typedef enum HeapMemoryBlockBusyIndicator {
     BI_GREEN = 0,
     BI_RED = 1,

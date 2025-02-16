@@ -12,6 +12,7 @@ struct HeapObject {
     size_t objectSize;
     size_t dataSize;
     HeapObjMarker marker;
+    uint8_t deleted;
 
     void* data;
 };
@@ -20,4 +21,4 @@ typedef struct HeapObject HeapObj;
 
 HeapObj* createObject(VM* vm, size_t dataSize, void* data);
 
-void deleteObject(VM* vm, HeapObj* object);
+VmRetCode deleteObject(VM* vm, HeapObj* object);

@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include "virtual_machine.h"
 #include "vm_object.h"
@@ -14,6 +12,7 @@ HeapObj* createObject(VM* vm, size_t dataSize, void* data) {
     objectStartPtr->objectSize = objectSize;
     objectStartPtr->dataSize = dataSize;
     objectStartPtr->marker = marker;
+    objectStartPtr->deleted = 0;
     objectStartPtr->data = (void*)(objectStartPtr + sizeof(HeapObj));
 
     memcpy(objectStartPtr->data, data, dataSize);
@@ -25,7 +24,14 @@ HeapObj* createObject(VM* vm, size_t dataSize, void* data) {
     return objectStartPtr;
 }
 
-void deleteObject(VM* vm, HeapObj* object) {
+VmRetCode deleteObject(VM* vm, HeapObj* object) {
+    if (object->deleted == 1) {
+#ifdef VM_LOGS_ENABLED
+        printf("\x1B[31mERROR: Object already deleted\x1B[0m\n");
+#endif
+        return VM_RC_ERROR_OBJ_ALREADY_DELETED;
+    }
+    object->deleted = 1;
     uint32_t occupiedBlocks = object->objectSize / vm->heapBlockSize;
     if (object->objectSize % vm->heapBlockSize > 0) {
         occupiedBlocks++;
@@ -39,4 +45,6 @@ void deleteObject(VM* vm, HeapObj* object) {
         curBlockIndex++;
         blockAddress = vm->heap->blocks[curBlockIndex];
     }
+
+    return VM_RC_SUC_OBJ_DELETED;
 }
