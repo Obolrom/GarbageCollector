@@ -29,7 +29,11 @@ typedef struct VirtualMachine {
 
 VM* createVirtualMachine(uint32_t vmHeapSize, uint32_t vmHeapBlockSize);
 
+void destroyVirtualMachine(VM* vm);
+
 VmHeap* createVmHeap(VM* vm);
+
+void destroyVmHeap(VmHeap* vmHeap);
 
 uint32_t getOccupiedHeapBlocksAmount(VmHeap* heap);
 

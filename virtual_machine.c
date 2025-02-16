@@ -44,6 +44,35 @@ VmHeap* createVmHeap(VM* vm) {
     return vmHeap;
 }
 
+void destroyVirtualMachine(VM* vm) {
+#ifdef VM_LOGS_ENABLED
+    printf("VM destroying...\n");
+#endif
+    destroyVmHeap(vm->heap);
+    free(vm->stack);
+    free(vm);
+
+#ifdef VM_LOGS_ENABLED
+    printf("VM destroyed\n");
+#endif
+}
+
+void destroyVmHeap(VmHeap* vmHeap) {
+#ifdef VM_LOGS_ENABLED
+    printf("VM heap destroying...\n");
+#endif
+    for (int i = 0; i < vmHeap->blockAmount; ++i) {
+        free(vmHeap->blocks[i]);
+    }
+    free(vmHeap->blocks);
+    free(vmHeap->memory);
+    free(vmHeap);
+
+#ifdef VM_LOGS_ENABLED
+    printf("VM heap destroyed\n");
+#endif
+}
+
 void* findFreeBlockAddress(VM* vm, size_t objectSize) {
     VmHeap* heap = vm->heap;
     uint32_t freeMemoryBytes = 0;

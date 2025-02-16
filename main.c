@@ -127,6 +127,8 @@ int testCase1() {
     }
 #endif
 
+    destroyVirtualMachine(vm);
+
     return passed;
 }
 
@@ -178,6 +180,8 @@ int testCase2() {
     }
 #endif
 
+    destroyVirtualMachine(vm);
+
     return passed;
 }
 
@@ -228,6 +232,8 @@ int testCase3() {
         printf(RED "Test 'testCase3' FAILED\n" RESET);
     }
 #endif
+
+    destroyVirtualMachine(vm);
 
     return passed;
 }
@@ -292,6 +298,8 @@ int testCase4() {
         printf(RED "Test 'testCase4' FAILED\n" RESET);
     }
 #endif
+
+    destroyVirtualMachine(vm);
 
     return passed;
 }
@@ -388,6 +396,8 @@ int testCase5() {
     }
 #endif
 
+    destroyVirtualMachine(vm);
+
     return passed;
 }
 
@@ -480,6 +490,8 @@ int testCase6() {
         printf(RED "Test 'testCase6' FAILED\n" RESET);
     }
 #endif
+
+    destroyVirtualMachine(vm);
 
     return passed;
 }
@@ -627,6 +639,8 @@ int testCase7() {
         printf(RED "Test 'testCase7' FAILED\n" RESET);
     }
 #endif
+
+    destroyVirtualMachine(vm);
 
     return passed;
 }
