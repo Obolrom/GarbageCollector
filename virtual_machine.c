@@ -141,39 +141,42 @@ void printFullHeapStats(VmHeap* heap) {
 
 void walkThroughHeap(VM* vm) {
     VmHeap* heap = vm->heap;
-    VmHeapMemBlock* initialBlock = *heap->blocks;
     size_t currentBlockIndex = 0;
-    VmHeapMemBlock* currentBlock = initialBlock;
     size_t actualOccupiedMemory = 0;
     size_t totalBlocksOccupiedMemory = 0;
 
-    while (currentBlock != NULL) {
-        if (currentBlock->busyIndicator == BI_RED) {
-            HeapObj* object = (void*) heap->memory + (sizeof(HeapObj) * currentBlockIndex);
-            actualOccupiedMemory += object->objectSize;
-            size_t consumedBlocks = object->objectSize / vm->heapBlockSize;
-            if (consumedBlocks % vm->heapBlockSize > 0) {
-                consumedBlocks++;
-            }
-            totalBlocksOccupiedMemory += (consumedBlocks * vm->heapBlockSize);
-            for (int i = 0; i < consumedBlocks; ++i) {
-                currentBlockIndex++;
-            }
-            printf("Block BI_RED %zu\t%zu\tconsumed blocks:%zu, %zu\t%p\n",
-                   currentBlock->position,
-                   object->objectSize,
-                   consumedBlocks,
-                   object->objectSize % vm->heapBlockSize,
-                   object->data);
-
-            currentBlock = heap->blocks[currentBlockIndex];
+    while (currentBlockIndex < heap->blockAmount) {
+        VmHeapMemBlock* currentBlock = heap->blocks[currentBlockIndex];
+        if (currentBlock == NULL) {
+            printf("Error: NULL block at index %zu\n", currentBlockIndex);
+            break;
         }
-        else {
-            printf("Block %zu\n", currentBlock->position);
-            currentBlock = heap->blocks[++currentBlockIndex];
+
+        if (currentBlock->busyIndicator == BI_RED) {
+            HeapObj* object = (HeapObj*)
+                    ((uint8_t *)heap->memory + (currentBlock->position * vm->heapBlockSize));
+
+            if (object->objectSize == 0 || object->objectSize > vm->heapSize) {
+                printf("Error: Invalid objectSize at block %zu\n", currentBlockIndex);
+                break;
+            }
+
+            actualOccupiedMemory += object->objectSize;
+
+            size_t consumedBlocks = (object->objectSize + vm->heapBlockSize - 1) / vm->heapBlockSize;
+            totalBlocksOccupiedMemory += consumedBlocks * vm->heapBlockSize;
+
+            printf("Block BI_RED %zu\tObject size: %zu\tBlocks used: %zu\t%p\n",
+                   currentBlock->position, object->objectSize, consumedBlocks, object->data);
+
+            currentBlockIndex += consumedBlocks;
+        } else {
+            printf("Block %zu is free\n", currentBlock->position);
+            currentBlockIndex++;
         }
     }
-    printf("Calculated occupied memory: %zu\n", actualOccupiedMemory);
-    printf("Calculated total blocks occupied memory: %zu\n", totalBlocksOccupiedMemory);
-    printf("Memory fragmentation (bytes): %zu\n", (totalBlocksOccupiedMemory - actualOccupiedMemory));
+
+    printf("Total occupied memory: %zu bytes\n", actualOccupiedMemory);
+    printf("Total allocated blocks memory: %zu bytes\n", totalBlocksOccupiedMemory);
+    printf("Memory fragmentation: %zu bytes\n", totalBlocksOccupiedMemory - actualOccupiedMemory);
 }
