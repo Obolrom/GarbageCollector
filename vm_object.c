@@ -24,3 +24,19 @@ HeapObj* createObject(VM* vm, size_t dataSize, void* data) {
 
     return objectStartPtr;
 }
+
+void deleteObject(VM* vm, HeapObj* object) {
+    uint32_t occupiedBlocks = object->objectSize / vm->heapBlockSize;
+    if (object->objectSize % vm->heapBlockSize > 0) {
+        occupiedBlocks++;
+    }
+    uint32_t blockOffset = ((void*)object - (void*)vm->heap->memory) / vm->heapBlockSize;
+    uint32_t curBlockIndex = blockOffset;
+    VmHeapMemBlock* blockAddress = vm->heap->blocks[curBlockIndex];
+
+    for (int i = 0; i < occupiedBlocks; ++i) {
+        blockAddress->busyIndicator = BI_GREEN;
+        curBlockIndex++;
+        blockAddress = vm->heap->blocks[curBlockIndex];
+    }
+}

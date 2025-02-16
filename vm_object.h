@@ -19,3 +19,5 @@ struct HeapObject {
 typedef struct HeapObject HeapObj;
 
 HeapObj* createObject(VM* vm, size_t dataSize, void* data);
+
+void deleteObject(VM* vm, HeapObj* object);
