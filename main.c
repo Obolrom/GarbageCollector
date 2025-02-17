@@ -73,6 +73,7 @@ int testCase7();
 int testCase8();
 int testCase9();
 int testCase10();
+int testCase11();
 
 int main() {
     testSuite();
@@ -103,6 +104,7 @@ void testSuite() {
     testCase8();
     testCase9();
     testCase10();
+    testCase11();
 }
 
 int testCase1() {
@@ -896,6 +898,72 @@ int testCase10() {
     }
     else {
         printf(RED "Test 'testCase10' FAILED\n" RESET);
+    }
+#endif
+
+    destroyVirtualMachine(vm);
+
+    return passed;
+}
+
+int testCase11_helperFunction_passed = 1;
+void testCase11_helperFunction(int32_t instructionPointer, int32_t stackTopValue) {
+    if (instructionPointer == 2 && stackTopValue != 10) {
+        testCase11_helperFunction_passed = 0;
+    }
+    if (instructionPointer == 4 && stackTopValue != 40) {
+        testCase11_helperFunction_passed = 0;
+    }
+    if (instructionPointer == 5 && stackTopValue != 50) {
+        testCase11_helperFunction_passed = 0;
+    }
+    if (instructionPointer == 6) {
+        testCase11_helperFunction_passed = 0;
+    }
+    if (instructionPointer == 7) {
+        testCase11_helperFunction_passed = 0;
+    }
+    if (instructionPointer == 8) {
+        testCase11_helperFunction_passed = 0;
+    }
+    if (instructionPointer == 9) {
+        testCase11_helperFunction_passed = 0;
+    }
+    if (instructionPointer == 10 && stackTopValue != 50) {
+        testCase11_helperFunction_passed = 0;
+    }
+}
+
+int testCase11() {
+    int passed = 1;
+    VM* vm = createVirtualMachine(240, 48);
+
+    int32_t bytecode[] = {
+            OP_PUSH, 10,
+            OP_PUSH, 40,
+            OP_ADD,
+            OP_JMP, 10,
+            OP_PUSH, 50,
+            OP_ADD,
+            OP_PRINT,
+            OP_HALT,
+    };
+
+    executeBytecode(vm, bytecode, testCase11_helperFunction);
+
+    passed = testCase11_helperFunction_passed;
+    for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
+        if (vm->stack[i] != -1) {
+            passed = 0;
+        }
+    }
+
+#ifdef TEST_OUTPUT_ENABLED
+    if (passed == 1) {
+        printf(GREEN "Test 'testCase11' passed\n" RESET);
+    }
+    else {
+        printf(RED "Test 'testCase11' FAILED\n" RESET);
     }
 #endif
 

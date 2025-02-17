@@ -12,7 +12,9 @@ enum VirtualMachineOperationalCodes {
 
     OP_PRINT = 3000,
 
-    OP_HALT = 4000,
+    OP_JMP = 4000, // 'JMP addr' - unconditional jump; addr - bytecode instruction index
+
+    OP_HALT = 9000,
 };
 
 typedef enum VirtualMachineReturnCodes {

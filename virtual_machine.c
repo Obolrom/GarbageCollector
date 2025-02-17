@@ -47,6 +47,11 @@ void executeBytecode(VM* vm, const int32_t* bytecode, void (*stackTopValueAtInst
                 vm->stack[++vm->stackPointer] = param1 + param2;
                 break;
             }
+            case OP_JMP: {
+                int32_t jumpInstructionPointer = bytecode[ip];
+                ip = jumpInstructionPointer;
+                break;
+            }
             case OP_PRINT: {
                 int32_t output = vm->stack[vm->stackPointer];
                 vm->stack[vm->stackPointer--] = -1;
@@ -63,7 +68,7 @@ void executeBytecode(VM* vm, const int32_t* bytecode, void (*stackTopValueAtInst
             }
             default: {
 #ifdef VM_INTERPRETER_LOGS_ENABLED
-                printf("VM bytecode instruction: %d is not defined\n", instruction);
+                printf("\x1B[31mVM bytecode instruction: %d is not defined\x1B[0m\n", instruction);
 #endif
             }
         }
