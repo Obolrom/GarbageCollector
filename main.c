@@ -72,6 +72,7 @@ int testCase6();
 int testCase7();
 int testCase8();
 int testCase9();
+int testCase10();
 
 int main() {
     testSuite();
@@ -101,6 +102,7 @@ void testSuite() {
     testCase7();
     testCase8();
     testCase9();
+    testCase10();
 }
 
 int testCase1() {
@@ -783,10 +785,6 @@ int testCase8() {
     return passed;
 }
 
-void testCase9HelperFunc(HeapObj* object) {
-    printf("Object %zu\n", object->objectSize);
-}
-
 int testCase9() {
     int passed = 1;
     VM* vm = createVirtualMachine(240, 48);
@@ -845,6 +843,50 @@ int testCase9() {
     }
     else {
         printf(RED "Test 'testCase9' FAILED\n" RESET);
+    }
+#endif
+
+    destroyVirtualMachine(vm);
+
+    return passed;
+}
+
+int testCase10_helperFunction_passed = 1;
+void testCase10_helperFunction(int32_t instructionPointer, int32_t stackTopValue) {
+    if (instructionPointer == 8 && stackTopValue != 100) {
+        testCase10_helperFunction_passed = 0;
+    }
+}
+
+int testCase10() {
+    int passed = 1;
+    VM* vm = createVirtualMachine(240, 48);
+
+    int32_t bytecode[] = {
+            OP_PUSH, 10,
+            OP_PUSH, 40,
+            OP_ADD,
+            OP_PUSH, 50,
+            OP_ADD,
+            OP_PRINT,
+            OP_HALT,
+    };
+
+    executeBytecode(vm, bytecode, testCase10_helperFunction);
+
+    for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
+        if (vm->stack[i] != -1) {
+            passed = 0;
+        }
+    }
+    passed = testCase10_helperFunction_passed;
+
+#ifdef TEST_OUTPUT_ENABLED
+    if (passed == 1) {
+        printf(GREEN "Test 'testCase10' passed\n" RESET);
+    }
+    else {
+        printf(RED "Test 'testCase10' FAILED\n" RESET);
     }
 #endif
 

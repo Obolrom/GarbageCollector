@@ -11,13 +11,63 @@ VM* createVirtualMachine(uint32_t vmHeapSize, uint32_t vmHeapBlockSize) {
     VM* virtualMachine = malloc(sizeof(struct VirtualMachine));
     virtualMachine->heapSize = vmHeapSize;
     virtualMachine->heapBlockSize = vmHeapBlockSize;
+    virtualMachine->stackPointer = -1;
     virtualMachine->heap = createVmHeap(virtualMachine);
-    virtualMachine->stack = malloc(sizeof(VmStack));
+    virtualMachine->callStack = malloc(sizeof(VmStack));
 #ifdef VM_LOGS_ENABLED
     printf("VM initialized\n");
 #endif
 
     return virtualMachine;
+}
+
+void executeBytecode(VM* vm, const int32_t* bytecode, void (*stackTopValueAtInstructionIndex)(int32_t, int32_t)) {
+    for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
+        vm->stack[i] = -1;
+    }
+#ifdef VM_INTERPRETER_LOGS_ENABLED
+    printf("VM bytecode execution started\n");
+#endif
+
+    for (int ip = 0; ;) {
+        int32_t instruction = bytecode[ip++];
+        if (stackTopValueAtInstructionIndex != NULL) {
+            stackTopValueAtInstructionIndex(ip - 1, vm->stack[vm->stackPointer]);
+        }
+
+        switch (instruction) {
+            case OP_PUSH: {
+                vm->stack[++vm->stackPointer] = bytecode[ip++];
+                break;
+            }
+            case OP_ADD: {
+                int32_t param1 = vm->stack[vm->stackPointer];
+                vm->stack[vm->stackPointer--] = -1;
+                int32_t param2 = vm->stack[vm->stackPointer--];
+                vm->stack[++vm->stackPointer] = param1 + param2;
+                break;
+            }
+            case OP_PRINT: {
+                int32_t output = vm->stack[vm->stackPointer];
+                vm->stack[vm->stackPointer--] = -1;
+#ifdef VM_INTERPRETER_STDOUT_ENABLED
+                printf("Bytecode stdout: %d\n", output);
+#endif
+                break;
+            }
+            case OP_HALT: {
+#ifdef VM_INTERPRETER_LOGS_ENABLED
+                printf("VM HALT\n");
+#endif
+                return;
+            }
+            default: {
+#ifdef VM_INTERPRETER_LOGS_ENABLED
+                printf("VM bytecode instruction: %d is not defined\n", instruction);
+#endif
+            }
+        }
+    }
 }
 
 VmHeap* createVmHeap(VM* vm) {
@@ -49,7 +99,7 @@ void destroyVirtualMachine(VM* vm) {
     printf("VM destroying...\n");
 #endif
     destroyVmHeap(vm->heap);
-    free(vm->stack);
+    free(vm->callStack);
     free(vm);
 
 #ifdef VM_LOGS_ENABLED
