@@ -853,6 +853,15 @@ int testCase9() {
 
 int testCase10_helperFunction_passed = 1;
 void testCase10_helperFunction(int32_t instructionPointer, int32_t stackTopValue) {
+    if (instructionPointer == 2 && stackTopValue != 10) {
+        testCase10_helperFunction_passed = 0;
+    }
+    if (instructionPointer == 4 && stackTopValue != 40) {
+        testCase10_helperFunction_passed = 0;
+    }
+    if (instructionPointer == 5 && stackTopValue != 50) {
+        testCase10_helperFunction_passed = 0;
+    }
     if (instructionPointer == 8 && stackTopValue != 100) {
         testCase10_helperFunction_passed = 0;
     }
@@ -874,12 +883,12 @@ int testCase10() {
 
     executeBytecode(vm, bytecode, testCase10_helperFunction);
 
+    passed = testCase10_helperFunction_passed;
     for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
         if (vm->stack[i] != -1) {
             passed = 0;
         }
     }
-    passed = testCase10_helperFunction_passed;
 
 #ifdef TEST_OUTPUT_ENABLED
     if (passed == 1) {
