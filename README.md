@@ -1,7 +1,7 @@
 ## Operation codes for virtual machine
 
 ### Arithmetic operations
-1. `OP_ADD` - addition. callStack[top-1] = callStack[top-1] + callStack[top], pop callStack[top]
+1. `OP_ADD` - addition. opStack[top-1] = opStack[top-1] + opStack[top], pop opStack[top]
 2. `OP_SUB` - subtraction
 3. `MUL` - multiplication
 4. `DIV` - division
@@ -15,8 +15,9 @@
 1. `OP_JMP addr` - unconditional jump
 2. `OP_JZ addr` - jump to addr if opStack[top] == 0
 3. `OP_JNZ addr` - jump to addr if opStack[top] != 0
-4. `CALL addr` - functions call, puts the return address to callStack
-5. `RET` - returns execution to caller function
+4. `OP_JEQ addr` - - jump to addr if opStack[top-1] == opStack[top]; pop; pop
+5. `CALL addr` - functions call, puts the return address to callStack
+6. `RET` - returns execution to caller function
 
 ### Operations on variables
 1. `LOAD var_idx` - loads variable to callStack

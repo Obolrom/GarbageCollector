@@ -62,6 +62,8 @@ void executeBytecode(VM* vm, const int32_t* bytecode, void (*stackTopValueAtInst
             case OP_JZ: {
                 if (vm->stack[vm->stackPointer] == 0) {
                     ip = bytecode[ip];
+                } else {
+                    ip++;
                 }
                 vm->stack[vm->stackPointer--] = -1;
                 break;
@@ -69,8 +71,22 @@ void executeBytecode(VM* vm, const int32_t* bytecode, void (*stackTopValueAtInst
             case OP_JNZ: {
                 if (vm->stack[vm->stackPointer] != 0) {
                     ip = bytecode[ip];
+                } else {
+                    ip++;
                 }
                 vm->stack[vm->stackPointer--] = -1;
+                break;
+            }
+            case OP_JEQ: {
+                int32_t right = vm->stack[vm->stackPointer];
+                vm->stack[vm->stackPointer--] = -1;
+                int32_t left = vm->stack[vm->stackPointer];
+                vm->stack[vm->stackPointer--] = -1;
+                if (left == right) {
+                    ip = bytecode[ip];
+                } else {
+                    ip++;
+                }
                 break;
             }
             case OP_PRINT: {

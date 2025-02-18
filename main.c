@@ -77,6 +77,9 @@ int testCase11();
 int testCase12();
 int testCase13();
 int testCase14();
+int testCase15();
+int testCase16();
+int testCase17();
 
 int main() {
     testSuite();
@@ -111,6 +114,9 @@ void testSuite() {
     testCase12();
     testCase13();
     testCase14();
+    testCase15();
+    testCase16();
+    testCase17();
 }
 
 int testCase1() {
@@ -1138,6 +1144,195 @@ int testCase14() {
     }
     else {
         printf(RED "Test 'testCase14' FAILED\n" RESET);
+    }
+#endif
+
+    destroyVirtualMachine(vm);
+
+    return passed;
+}
+
+int testCase15_helperFunction_passed = 1;
+void testCase15_helperFunction(int32_t instructionPointer, int32_t stackTopValue) {
+    if (instructionPointer == 2 && stackTopValue != 15) {
+        testCase15_helperFunction_passed = 0;
+    }
+    if (instructionPointer == 4 && stackTopValue != 15) {
+        testCase15_helperFunction_passed = 0;
+    }
+    if (instructionPointer == 12 && stackTopValue != 77) {
+        testCase15_helperFunction_passed = 0;
+    }
+}
+
+int testCase15() {
+    int passed = 1;
+    VM* vm = createVirtualMachine(240, 48);
+
+    // should print 77 in stdout if VM_INTERPRETER_STDOUT_ENABLED
+    int32_t bytecode[] = {
+            OP_PUSH, 15,
+            OP_PUSH, 15,
+            OP_JEQ, 10,
+            OP_PUSH, 33,
+            OP_PRINT,
+            OP_HALT,
+            OP_PUSH, 77,
+            OP_PRINT,
+            OP_HALT,
+    };
+
+    executeBytecode(vm, bytecode, testCase15_helperFunction);
+
+    passed = testCase15_helperFunction_passed;
+    for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
+        if (vm->stack[i] != -1) {
+            passed = 0;
+        }
+    }
+    if (vm->stackPointer != -1) {
+        passed = 0;
+    }
+
+#ifdef TEST_OUTPUT_ENABLED
+    if (passed == 1) {
+        printf(GREEN "Test 'testCase15' passed\n" RESET);
+    }
+    else {
+        printf(RED "Test 'testCase15' FAILED\n" RESET);
+    }
+#endif
+
+    destroyVirtualMachine(vm);
+
+    return passed;
+}
+
+int testCase16_helperFunction_passed = 1;
+void testCase16_helperFunction(int32_t instructionPointer, int32_t stackTopValue) {
+    if (instructionPointer == 2 && stackTopValue != 15) {
+        testCase16_helperFunction_passed = 0;
+    }
+    if (instructionPointer == 4 && stackTopValue != 11) {
+        testCase16_helperFunction_passed = 0;
+    }
+    if (instructionPointer == 8 && stackTopValue != 33) {
+        testCase16_helperFunction_passed = 0;
+    }
+}
+
+int testCase16() {
+    int passed = 1;
+    VM* vm = createVirtualMachine(240, 48);
+
+    // should print 33 in stdout if VM_INTERPRETER_STDOUT_ENABLED
+    int32_t bytecode[] = {
+            OP_PUSH, 15,
+            OP_PUSH, 11,
+            OP_JEQ, 10,
+            OP_PUSH, 33,
+            OP_PRINT,
+            OP_HALT,
+            OP_PUSH, 77,
+            OP_PRINT,
+            OP_HALT,
+    };
+
+    executeBytecode(vm, bytecode, testCase16_helperFunction);
+
+    passed = testCase16_helperFunction_passed;
+    for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
+        if (vm->stack[i] != -1) {
+            passed = 0;
+        }
+    }
+    if (vm->stackPointer != -1) {
+        passed = 0;
+    }
+
+#ifdef TEST_OUTPUT_ENABLED
+    if (passed == 1) {
+        printf(GREEN "Test 'testCase16' passed\n" RESET);
+    }
+    else {
+        printf(RED "Test 'testCase16' FAILED\n" RESET);
+    }
+#endif
+
+    destroyVirtualMachine(vm);
+
+    return passed;
+}
+
+int testCase17_helperFunction_passed = 1;
+void testCase17_helperFunction(int32_t instructionPointer, int32_t stackTopValue) {
+    if (instructionPointer == 2 && stackTopValue != 21) {
+        testCase17_helperFunction_passed = 0;
+    }
+    if (instructionPointer == 4 && stackTopValue != -10) {
+        testCase17_helperFunction_passed = 0;
+    }
+    if (instructionPointer == 6 && stackTopValue != 10) {
+        testCase17_helperFunction_passed = 0;
+    }
+    if (instructionPointer == 7 && stackTopValue != 0) {
+        testCase17_helperFunction_passed = 0;
+    }
+    if (instructionPointer == 9 && stackTopValue != 21) {
+        testCase17_helperFunction_passed = 0;
+    }
+    if (instructionPointer == 11 && stackTopValue != 100) {
+        testCase17_helperFunction_passed = 0;
+    }
+    if (instructionPointer == 13 && stackTopValue != 200) {
+        testCase17_helperFunction_passed = 0;
+    }
+    if (instructionPointer == 15 && stackTopValue != 300) {
+        testCase17_helperFunction_passed = 0;
+    }
+}
+
+int testCase17() {
+    int passed = 1;
+    VM* vm = createVirtualMachine(240, 48);
+
+    // should print 300; 200; 100 in stdout if VM_INTERPRETER_STDOUT_ENABLED
+    int32_t bytecode[] = {
+            OP_PUSH, 21,
+            OP_PUSH, -10,
+            OP_PUSH, 10,
+            OP_ADD,
+            OP_JNZ, 17,
+            OP_PUSH, 100,
+            OP_PUSH, 200,
+            OP_PUSH, 300,
+            OP_PRINT,
+            OP_PRINT,
+            OP_PRINT,
+            OP_HALT,
+    };
+
+    executeBytecode(vm, bytecode, testCase17_helperFunction);
+
+    passed = testCase17_helperFunction_passed;
+    for (int i = 1; i < OPERATION_STACK_SIZE; ++i) {
+        if (vm->stack[i] != -1) {
+            passed = 0;
+        }
+    }
+    if (vm->stack[0] != 21) {
+        passed = 0;
+    }
+    if (vm->stackPointer != 0) {
+        passed = 0;
+    }
+
+#ifdef TEST_OUTPUT_ENABLED
+    if (passed == 1) {
+        printf(GREEN "Test 'testCase17' passed\n" RESET);
+    }
+    else {
+        printf(RED "Test 'testCase17' FAILED\n" RESET);
     }
 #endif
 
