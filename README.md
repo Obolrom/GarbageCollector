@@ -1,18 +1,18 @@
 ## Operation codes for virtual machine
 
 ### Arithmetic operations
-1. `ADD` - addition. callStack[top-1] = callStack[top-1] + callStack[top], pop callStack[top]
-2. `SUB` - subtraction
+1. `OP_ADD` - addition. callStack[top-1] = callStack[top-1] + callStack[top], pop callStack[top]
+2. `OP_SUB` - subtraction
 3. `MUL` - multiplication
 4. `DIV` - division
 
 ### Stack operations
-1. `PUSH val` - put val (number) to callStack
-2. `POP` - remove top element from callStack
-3. `DUP` - duplicate a top element
+1. `OP_PUSH val` - put val (number) to callStack
+2. `OP_POP` - remove top element from callStack
+3. `OP_DUP` - duplicate a top element
 
 ### Conditions & loops operations
-1. `JMP addr` - unconditional jump
+1. `OP_JMP addr` - unconditional jump
 2. `JZ addr` - jump to addr if callStack[top] == 0
 3. `JNS addr` - jump to addr if callStack[top] != 0
 4. `CALL addr` - functions call, puts the return address to callStack
@@ -28,8 +28,8 @@
 3. `SET_FIELD obj, field_id, val` - set value to object's variable
 
 ### I/O
-1. `PRINT` - top callStack element to stdout
+1. `OP_PRINT` - top callStack element to stdout
 2. `READ` - read input from stdin
 
 ### VM internal
-1. `HALT` - stop virtual machine
+1. `OP_HALT` - stop virtual machine

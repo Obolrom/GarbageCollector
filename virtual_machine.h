@@ -4,7 +4,7 @@
 
 enum VirtualMachineOperationalCodes {
     OP_ADD = 1000,
-    OP_SUM,
+    OP_SUB = 1001,
 
     OP_PUSH = 2000,
     OP_POP = 2001,

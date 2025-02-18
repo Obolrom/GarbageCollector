@@ -41,10 +41,17 @@ void executeBytecode(VM* vm, const int32_t* bytecode, void (*stackTopValueAtInst
                 break;
             }
             case OP_ADD: {
-                int32_t param1 = vm->stack[vm->stackPointer];
+                int32_t left = vm->stack[vm->stackPointer];
                 vm->stack[vm->stackPointer--] = -1;
-                int32_t param2 = vm->stack[vm->stackPointer--];
-                vm->stack[++vm->stackPointer] = param1 + param2;
+                int32_t right = vm->stack[vm->stackPointer--];
+                vm->stack[++vm->stackPointer] = left + right;
+                break;
+            }
+            case OP_SUB: {
+                int32_t left = vm->stack[vm->stackPointer];
+                vm->stack[vm->stackPointer--] = -1;
+                int32_t right = vm->stack[vm->stackPointer--];
+                vm->stack[++vm->stackPointer] = left + right;
                 break;
             }
             case OP_JMP: {
