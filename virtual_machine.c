@@ -59,7 +59,26 @@ void executeBytecode(VM* vm, const int32_t* bytecode, void (*stackTopValueAtInst
                 ip = jumpInstructionPointer;
                 break;
             }
+            case OP_JZ: {
+                if (vm->stack[vm->stackPointer] == 0) {
+                    ip = bytecode[ip];
+                }
+                vm->stack[vm->stackPointer--] = -1;
+                break;
+            }
+            case OP_JNZ: {
+                if (vm->stack[vm->stackPointer] != 0) {
+                    ip = bytecode[ip];
+                }
+                vm->stack[vm->stackPointer--] = -1;
+                break;
+            }
             case OP_PRINT: {
+                if (vm->stackPointer == -1) {
+#ifdef VM_INTERPRETER_LOGS_ENABLED
+                    printf("\x1B[31mVM OP_PRINT error, operational stack is empty\x1B[0m\n");
+#endif
+                }
                 int32_t output = vm->stack[vm->stackPointer];
                 vm->stack[vm->stackPointer--] = -1;
 #ifdef VM_INTERPRETER_STDOUT_ENABLED

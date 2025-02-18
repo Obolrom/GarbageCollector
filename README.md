@@ -13,8 +13,8 @@
 
 ### Conditions & loops operations
 1. `OP_JMP addr` - unconditional jump
-2. `JZ addr` - jump to addr if callStack[top] == 0
-3. `JNS addr` - jump to addr if callStack[top] != 0
+2. `OP_JZ addr` - jump to addr if opStack[top] == 0
+3. `OP_JNZ addr` - jump to addr if opStack[top] != 0
 4. `CALL addr` - functions call, puts the return address to callStack
 5. `RET` - returns execution to caller function
 
