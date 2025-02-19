@@ -12,10 +12,11 @@ enum VirtualMachineOperationalCodes {
 
     OP_PRINT = 3000,
 
-    OP_JMP = 4000, // 'JMP addr' - unconditional jump; addr - bytecode instruction index
-    OP_JZ = 4001, // 'JZ addr' - jump to addr if opStack[top] == 0
-    OP_JNZ = 4002, // 'JNZ addr' - jump to addr if opStack[top] != 0
-    OP_JEQ = 4003, // 'JNZ addr' - jump to addr if opStack[top-1] == opStack[top]; pop; pop
+    OP_JMP = 4000,
+    OP_JZ = 4001,
+    OP_JNZ = 4002,
+    OP_JEQ = 4003,
+    OP_JNE = 4004,
 
     OP_HALT = 9000,
 };

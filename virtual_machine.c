@@ -89,6 +89,18 @@ void executeBytecode(VM* vm, const int32_t* bytecode, void (*stackTopValueAtInst
                 }
                 break;
             }
+            case OP_JNE: {
+                int32_t right = vm->stack[vm->stackPointer];
+                vm->stack[vm->stackPointer--] = -1;
+                int32_t left = vm->stack[vm->stackPointer];
+                vm->stack[vm->stackPointer--] = -1;
+                if (left != right) {
+                    ip = bytecode[ip];
+                } else {
+                    ip++;
+                }
+                break;
+            }
             case OP_PRINT: {
                 if (vm->stackPointer == -1) {
 #ifdef VM_INTERPRETER_LOGS_ENABLED

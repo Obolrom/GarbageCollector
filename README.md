@@ -15,7 +15,8 @@
 1. `OP_JMP addr` - unconditional jump
 2. `OP_JZ addr` - jump to addr if opStack[top] == 0
 3. `OP_JNZ addr` - jump to addr if opStack[top] != 0
-4. `OP_JEQ addr` - - jump to addr if opStack[top-1] == opStack[top]; pop; pop
+4. `OP_JEQ addr` - jump to addr if opStack[top-1] == opStack[top]; pop; pop
+4. `OP_JNE addr` - jump to addr if opStack[top-1] != opStack[top]; pop; pop
 5. `CALL addr` - functions call, puts the return address to callStack
 6. `RET` - returns execution to caller function
 
