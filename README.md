@@ -16,9 +16,13 @@
 2. `OP_JZ addr` - jump to addr if opStack[top] == 0
 3. `OP_JNZ addr` - jump to addr if opStack[top] != 0
 4. `OP_JEQ addr` - jump to addr if opStack[top-1] == opStack[top]; pop; pop
-4. `OP_JNE addr` - jump to addr if opStack[top-1] != opStack[top]; pop; pop
-5. `CALL addr` - functions call, puts the return address to callStack
-6. `RET` - returns execution to caller function
+5. `OP_JNE addr` - jump to addr if opStack[top-1] != opStack[top]; pop; pop
+6. `OP_JLT addr` - jump to addr if opStack[top-1] < opStack[top]; pop; pop
+7. `OP_JGT addr` - jump to addr if opStack[top-1] > opStack[top]; pop; pop
+8. `OP_JLE addr` - jump to addr if opStack[top-1] <= opStack[top]; pop; pop
+9. `OP_JGE addr` - jump to addr if opStack[top-1] >= opStack[top]; pop; pop
+10. `CALL addr` - functions call, puts the return address to callStack
+11. `RET` - returns execution to caller function
 
 ### Operations on variables
 1. `LOAD var_idx` - loads variable to callStack

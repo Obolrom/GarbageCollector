@@ -17,6 +17,10 @@ enum VirtualMachineOperationalCodes {
     OP_JNZ = 4002,
     OP_JEQ = 4003,
     OP_JNE = 4004,
+    OP_JLT = 4005,
+    OP_JGT = 4006,
+    OP_JLE = 4007,
+    OP_JGE = 4008,
 
     OP_HALT = 9000,
 };

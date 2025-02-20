@@ -101,6 +101,54 @@ void executeBytecode(VM* vm, const int32_t* bytecode, void (*stackTopValueAtInst
                 }
                 break;
             }
+            case OP_JLT: {
+                int32_t right = vm->stack[vm->stackPointer];
+                vm->stack[vm->stackPointer--] = -1;
+                int32_t left = vm->stack[vm->stackPointer];
+                vm->stack[vm->stackPointer--] = -1;
+                if (left < right) {
+                    ip = bytecode[ip];
+                } else {
+                    ip++;
+                }
+                break;
+            }
+            case OP_JGT: {
+                int32_t right = vm->stack[vm->stackPointer];
+                vm->stack[vm->stackPointer--] = -1;
+                int32_t left = vm->stack[vm->stackPointer];
+                vm->stack[vm->stackPointer--] = -1;
+                if (left > right) {
+                    ip = bytecode[ip];
+                } else {
+                    ip++;
+                }
+                break;
+            }
+            case OP_JLE: {
+                int32_t right = vm->stack[vm->stackPointer];
+                vm->stack[vm->stackPointer--] = -1;
+                int32_t left = vm->stack[vm->stackPointer];
+                vm->stack[vm->stackPointer--] = -1;
+                if (left <= right) {
+                    ip = bytecode[ip];
+                } else {
+                    ip++;
+                }
+                break;
+            }
+            case OP_JGE: {
+                int32_t right = vm->stack[vm->stackPointer];
+                vm->stack[vm->stackPointer--] = -1;
+                int32_t left = vm->stack[vm->stackPointer];
+                vm->stack[vm->stackPointer--] = -1;
+                if (left <= right) {
+                    ip = bytecode[ip];
+                } else {
+                    ip++;
+                }
+                break;
+            }
             case OP_PRINT: {
                 if (vm->stackPointer == -1) {
 #ifdef VM_INTERPRETER_LOGS_ENABLED
