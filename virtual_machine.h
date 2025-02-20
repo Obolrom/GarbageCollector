@@ -21,6 +21,12 @@ enum VirtualMachineOperationalCodes {
     OP_JGT = 4006,
     OP_JLE = 4007,
     OP_JGE = 4008,
+    OP_CMP_EQ = 4009,
+    OP_CMP_NEQ = 4010,
+    OP_CMP_LT = 4011,
+    OP_CMP_GT = 4012,
+    OP_CMP_LTE = 4013,
+    OP_CMP_GTE = 4014,
 
     OP_HALT = 9000,
 };

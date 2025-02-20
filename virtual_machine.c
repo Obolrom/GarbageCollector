@@ -149,6 +149,78 @@ void executeBytecode(VM* vm, const int32_t* bytecode, void (*stackTopValueAtInst
                 }
                 break;
             }
+            case OP_CMP_EQ: {
+                int32_t right = vm->stack[vm->stackPointer];
+                vm->stack[vm->stackPointer--] = -1;
+                int32_t left = vm->stack[vm->stackPointer];
+                vm->stack[vm->stackPointer--] = -1;
+                if (left == right) {
+                    vm->stack[++vm->stackPointer] = 1;
+                } else {
+                    vm->stack[++vm->stackPointer] = 0;
+                }
+                break;
+            }
+            case OP_CMP_NEQ: {
+                int32_t right = vm->stack[vm->stackPointer];
+                vm->stack[vm->stackPointer--] = -1;
+                int32_t left = vm->stack[vm->stackPointer];
+                vm->stack[vm->stackPointer--] = -1;
+                if (left != right) {
+                    vm->stack[++vm->stackPointer] = 1;
+                } else {
+                    vm->stack[++vm->stackPointer] = 0;
+                }
+                break;
+            }
+            case OP_CMP_LT: {
+                int32_t right = vm->stack[vm->stackPointer];
+                vm->stack[vm->stackPointer--] = -1;
+                int32_t left = vm->stack[vm->stackPointer];
+                vm->stack[vm->stackPointer--] = -1;
+                if (left < right) {
+                    vm->stack[++vm->stackPointer] = 1;
+                } else {
+                    vm->stack[++vm->stackPointer] = 0;
+                }
+                break;
+            }
+            case OP_CMP_GT: {
+                int32_t right = vm->stack[vm->stackPointer];
+                vm->stack[vm->stackPointer--] = -1;
+                int32_t left = vm->stack[vm->stackPointer];
+                vm->stack[vm->stackPointer--] = -1;
+                if (left > right) {
+                    vm->stack[++vm->stackPointer] = 1;
+                } else {
+                    vm->stack[++vm->stackPointer] = 0;
+                }
+                break;
+            }
+            case OP_CMP_LTE: {
+                int32_t right = vm->stack[vm->stackPointer];
+                vm->stack[vm->stackPointer--] = -1;
+                int32_t left = vm->stack[vm->stackPointer];
+                vm->stack[vm->stackPointer--] = -1;
+                if (left <= right) {
+                    vm->stack[++vm->stackPointer] = 1;
+                } else {
+                    vm->stack[++vm->stackPointer] = 0;
+                }
+                break;
+            }
+            case OP_CMP_GTE: {
+                int32_t right = vm->stack[vm->stackPointer];
+                vm->stack[vm->stackPointer--] = -1;
+                int32_t left = vm->stack[vm->stackPointer];
+                vm->stack[vm->stackPointer--] = -1;
+                if (left >= right) {
+                    vm->stack[++vm->stackPointer] = 1;
+                } else {
+                    vm->stack[++vm->stackPointer] = 0;
+                }
+                break;
+            }
             case OP_PRINT: {
                 if (vm->stackPointer == -1) {
 #ifdef VM_INTERPRETER_LOGS_ENABLED
