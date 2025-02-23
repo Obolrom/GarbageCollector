@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "virtual_machine.h"
-#include "vm_object.h"
 #include "config.h"
 
 VM* createVirtualMachine(uint32_t vmHeapSize, uint32_t vmHeapBlockSize) {
@@ -13,7 +12,7 @@ VM* createVirtualMachine(uint32_t vmHeapSize, uint32_t vmHeapBlockSize) {
     virtualMachine->heapBlockSize = vmHeapBlockSize;
     virtualMachine->stackPointer = -1;
     virtualMachine->heap = createVmHeap(virtualMachine);
-    virtualMachine->callStack = malloc(sizeof(VmStack));
+    virtualMachine->callStack = malloc(sizeof(VmStackFrame));
 #ifdef VM_LOGS_ENABLED
     printf("VM initialized\n");
 #endif
@@ -51,7 +50,7 @@ void executeBytecode(VM* vm, const int32_t* bytecode, void (*stackTopValueAtInst
                 int32_t left = vm->stack[vm->stackPointer];
                 vm->stack[vm->stackPointer--] = -1;
                 int32_t right = vm->stack[vm->stackPointer--];
-                vm->stack[++vm->stackPointer] = left + right;
+                vm->stack[++vm->stackPointer] = right - left;
                 break;
             }
             case OP_JMP: {
@@ -219,6 +218,51 @@ void executeBytecode(VM* vm, const int32_t* bytecode, void (*stackTopValueAtInst
                 } else {
                     vm->stack[++vm->stackPointer] = 0;
                 }
+                break;
+            }
+            case OP_CALL: {
+                VmStackFrame* prevFrame = vm->callStack;
+                int32_t callAddress = bytecode[ip++];
+                int32_t argsCount = bytecode[ip++];
+
+                VmStackFrame *currentFrame = malloc(sizeof(VmStackFrame));
+                vm->callStack = currentFrame;
+                currentFrame->prevFrame = prevFrame;
+                currentFrame->argsCount = argsCount;
+                currentFrame->localsCount = 0;
+                currentFrame->returnInstructionPointer = ip;
+                currentFrame->locals = malloc(sizeof(VmValue) * (argsCount + 0));
+
+                ip = callAddress;
+                break;
+            }
+            case OP_STORE: {
+                VmStackFrame* currentFrame = vm->callStack;
+                int32_t varIndex = bytecode[ip++];
+                int32_t value = vm->stack[vm->stackPointer];
+                vm->stack[vm->stackPointer--] = -1;
+
+                currentFrame->locals[varIndex].type = TYPE_INT;
+                currentFrame->locals[varIndex].intVal = value;
+
+                break;
+            }
+            case OP_LOAD: {
+                VmStackFrame* currentFrame = vm->callStack;
+                int32_t varIndex = bytecode[ip++];
+                vm->stack[++vm->stackPointer] = currentFrame->locals[varIndex].intVal;
+
+                break;
+            }
+            case OP_RET: {
+                VmStackFrame* currentFrame = vm->callStack;
+                ip = currentFrame->returnInstructionPointer;
+                free(currentFrame->locals);
+                vm->callStack = currentFrame->prevFrame;
+                if (currentFrame->prevFrame != NULL) {
+                    free(currentFrame);
+                }
+
                 break;
             }
             case OP_PRINT: {

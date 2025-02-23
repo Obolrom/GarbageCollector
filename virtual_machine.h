@@ -28,14 +28,42 @@ enum VirtualMachineOperationalCodes {
     OP_CMP_LTE = 4013,
     OP_CMP_GTE = 4014,
 
+    OP_CALL = 5000,
+    OP_LOAD = 5001,
+    OP_STORE = 5002,
+    OP_RET = 5003,
+
     OP_HALT = 9000,
 };
+
+typedef struct HeapObject HeapObj;
 
 typedef enum VirtualMachineReturnCodes {
     VM_RC_ERROR_OBJ_ALREADY_DELETED,
 
     VM_RC_SUC_OBJ_DELETED,
 } VmRetCode;
+
+typedef enum {
+    TYPE_INT,
+    TYPE_OBJECT,
+} VmValueType;
+
+typedef struct VirtualMachineValue {
+    VmValueType type;
+    union {
+        int32_t intVal;
+        HeapObj* objectVal;
+    };
+} VmValue;
+
+typedef struct VirtualMachineStackFrame {
+    int32_t argsCount;
+    int32_t localsCount;
+    int32_t returnInstructionPointer;
+    VmValue* locals;
+    struct VirtualMachineStackFrame* prevFrame;
+} VmStackFrame;
 
 typedef enum HeapMemoryBlockBusyIndicator {
     BI_GREEN = 0,
@@ -53,18 +81,37 @@ typedef struct HeapMemory {
     VmHeapMemBlock** blocks;
 } VmHeap;
 
-typedef struct StackMemory {
-
-} VmStack;
-
 typedef struct VirtualMachine {
     VmHeap* heap;
-    VmStack* callStack;
+    VmStackFrame* callStack;
     uint32_t heapSize;
     uint32_t heapBlockSize;
     int32_t stack[OPERATION_STACK_SIZE];
     int32_t stackPointer;
 } VM;
+
+enum ObjectMarker {
+    VISITED = 2,
+    MARKED = 4,
+    CREATED = 8,
+};
+
+typedef enum ObjectMarker HeapObjMarker;
+
+struct HeapObject {
+    size_t objectSize;
+    size_t dataSize;
+    HeapObjMarker marker;
+    uint8_t deleted;
+
+    void* data;
+};
+
+HeapObj* createObject(VM* vm, size_t dataSize, void* data);
+
+VmRetCode deleteObject(VM* vm, HeapObj* object);
+
+void compactHeap(VM* vm, void (*func)(HeapObj*));
 
 VM* createVirtualMachine(uint32_t vmHeapSize, uint32_t vmHeapBlockSize);
 

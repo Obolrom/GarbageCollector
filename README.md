@@ -27,17 +27,17 @@
 13. `OP_CMP_GT` - opStack[top-1] > opStack[top]; pop; pop; push
 14. `OP_CMP_LTE` - opStack[top-1] <= opStack[top]; pop; pop; push
 15. `OP_CMP_GTE` - opStack[top-1] >= opStack[top]; pop; pop; push
-16. `CALL addr` - functions call, puts the return address to callStack
+16. `CALL addr args_count` - functions call, puts the return address to callStack; copies arguments from operation stack to locals of stack frame
 17. `RET` - returns execution to caller function
 
 ### Operations on variables
-1. `LOAD var_idx` - loads variable to callStack
-2. `STORE var_idx` - stores top callStack element to variable
+1. `LOAD var_idx` - move call stack frame locals[var_idx] to opStack[top]
+2. `STORE var_idx` - move opStack[top] to call stack frame locals[var_idx]
 
 ### Classes and objects
 1. `NEW class_id` - create instance of class_id
-2. `GET_FIELD obj, field_id` - get value of object's variable
-3. `SET_FIELD obj, field_id, val` - set value to object's variable
+2. `GET_FIELD obj, field_id` - get locals of object's variable
+3. `SET_FIELD obj, field_id, val` - set locals to object's variable
 
 ### I/O
 1. `OP_PRINT` - top callStack element to stdout

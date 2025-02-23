@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <string.h>
 #include "virtual_machine.h"
-#include "vm_object.h"
 
 #define TEST_OUTPUT_ENABLED
 #define RED   "\x1B[31m"
@@ -84,6 +83,8 @@ int testCase18();
 int testCase19();
 int testCase20();
 int testCase21();
+int testCase22();
+int testCase23();
 
 int main() {
     testSuite();
@@ -125,6 +126,8 @@ void testSuite() {
     testCase19();
     testCase20();
     testCase21();
+    testCase22();
+    testCase23();
 }
 
 int testCase1() {
@@ -1016,7 +1019,7 @@ int testCase12() {
             OP_PUSH, 10,
             OP_PUSH, 40,
             OP_ADD,
-            OP_PUSH, -20,
+            OP_PUSH, 20,
             OP_SUB,
             OP_PRINT,
             OP_HALT,
@@ -1557,6 +1560,146 @@ int testCase21() {
     }
     else {
         printf(RED "Test 'testCase21' FAILED\n" RESET);
+    }
+#endif
+
+    destroyVirtualMachine(vm);
+
+    return passed;
+}
+
+int testCase22_helperFunction_passed = 1;
+void testCase22_helperFunction(int32_t instructionPointer, int32_t stackTopValue) {
+    if (instructionPointer == 2 && stackTopValue != 5) {
+        testCase22_helperFunction_passed = 0;
+    }
+    if (instructionPointer == 7 && stackTopValue != 15) {
+        testCase22_helperFunction_passed = 0;
+    }
+    if (instructionPointer == 18 && stackTopValue != 15) {
+        testCase22_helperFunction_passed = 0;
+    }
+}
+
+int testCase22() {
+    int passed = 1;
+    VM* vm = createVirtualMachine(240, 48);
+
+    // should print 15 in stdout if VM_INTERPRETER_STDOUT_ENABLED
+    int32_t bytecode[] = {
+            OP_PUSH, 5,
+            OP_PUSH, 10,
+            OP_CALL, 9, 2,
+            OP_PRINT,
+            OP_HALT,
+
+            // function
+            OP_STORE, 0,
+            OP_STORE, 1,
+            OP_LOAD, 0,
+            OP_LOAD, 1,
+            OP_ADD,
+            OP_RET
+    };
+
+    executeBytecode(vm, bytecode, testCase22_helperFunction);
+
+    passed = testCase22_helperFunction_passed;
+    for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
+        if (vm->stack[i] != -1) {
+            passed = 0;
+        }
+    }
+    if (vm->stackPointer != -1) {
+        passed = 0;
+    }
+    if (vm->callStack == NULL) {
+        passed = 0;
+    }
+    if (vm->callStack->prevFrame != NULL) {
+        passed = 0;
+    }
+
+#ifdef TEST_OUTPUT_ENABLED
+    if (passed == 1) {
+        printf(GREEN "Test 'testCase22' passed\n" RESET);
+    }
+    else {
+        printf(RED "Test 'testCase22' FAILED\n" RESET);
+    }
+#endif
+
+    destroyVirtualMachine(vm);
+
+    return passed;
+}
+
+int testCase23_helperFunction_passed = 1;
+void testCase23_helperFunction(int32_t instructionPointer, int32_t stackTopValue) {
+    if (instructionPointer == 7 && stackTopValue != 7) {
+        testCase23_helperFunction_passed = 0;
+    }
+    if (instructionPointer == 18 && stackTopValue != 15) {
+        testCase23_helperFunction_passed = 0;
+    }
+    if (instructionPointer == 29 && stackTopValue != 7) {
+        testCase23_helperFunction_passed = 0;
+    }
+}
+
+int testCase23() {
+    int passed = 1;
+    VM* vm = createVirtualMachine(240, 48);
+
+    // should print 7 in stdout if VM_INTERPRETER_STDOUT_ENABLED
+    int32_t bytecode[] = {
+            OP_PUSH, 5,
+            OP_PUSH, 10,
+            OP_CALL, 9, 2,
+            OP_PRINT,
+            OP_HALT,
+
+            // function 1
+            OP_STORE, 0,
+            OP_STORE, 1,
+            OP_LOAD, 0,
+            OP_LOAD, 1,
+            OP_ADD,
+            OP_CALL, 22, 1,
+            OP_RET,
+
+            // function 2
+            OP_STORE, 0,
+            OP_LOAD, 0,
+            OP_PUSH, 8,
+            OP_SUB,
+            OP_RET,
+    };
+
+    executeBytecode(vm, bytecode, testCase23_helperFunction);
+
+    passed = testCase23_helperFunction_passed;
+    for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
+        if (vm->stack[i] != -1) {
+            passed = 0;
+        }
+    }
+    if (vm->stackPointer != -1) {
+        passed = 0;
+    }
+    if (vm->callStack == NULL) {
+        passed = 0;
+    }
+    if (vm->callStack->prevFrame != NULL) {
+        passed = 0;
+    }
+
+#ifdef TEST_OUTPUT_ENABLED
+    if (passed == 1) {
+        printf(GREEN "Test 'testCase23' passed\n" RESET);
+    }
+    else {
+        printf(RED "Test 'testCase23' FAILED\n" RESET);
     }
 #endif
 

@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "virtual_machine.h"
-#include "vm_object.h"
 #include "config.h"
 
 static size_t offset = 0;
