@@ -53,6 +53,13 @@ void executeBytecode(VM* vm, const int32_t* bytecode, void (*stackTopValueAtInst
                 vm->stack[++vm->stackPointer] = right - left;
                 break;
             }
+            case OP_MUL: {
+                int32_t left = vm->stack[vm->stackPointer];
+                vm->stack[vm->stackPointer--] = -1;
+                int32_t right = vm->stack[vm->stackPointer--];
+                vm->stack[++vm->stackPointer] = right * left;
+                break;
+            }
             case OP_JMP: {
                 int32_t jumpInstructionPointer = bytecode[ip];
                 ip = jumpInstructionPointer;
@@ -224,14 +231,15 @@ void executeBytecode(VM* vm, const int32_t* bytecode, void (*stackTopValueAtInst
                 VmStackFrame* prevFrame = vm->callStack;
                 int32_t callAddress = bytecode[ip++];
                 int32_t argsCount = bytecode[ip++];
+                int32_t localsCount = bytecode[ip++];
 
                 VmStackFrame *currentFrame = malloc(sizeof(VmStackFrame));
                 vm->callStack = currentFrame;
                 currentFrame->prevFrame = prevFrame;
                 currentFrame->argsCount = argsCount;
-                currentFrame->localsCount = 0;
+                currentFrame->localsCount = localsCount;
                 currentFrame->returnInstructionPointer = ip;
-                currentFrame->locals = malloc(sizeof(VmValue) * (argsCount + 0));
+                currentFrame->locals = malloc(sizeof(VmValue) * (argsCount + localsCount));
 
                 ip = callAddress;
                 break;
