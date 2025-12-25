@@ -516,3 +516,15 @@ size_t getUnusedMemoryAmountForTakenHeapBlocks(VM* vm) {
 
     return totalBlocksOccupiedMemory - actualOccupiedMemory;
 }
+
+void destroyVmDebug(VmDebug* vmDebug) {
+    if (vmDebug == NULL) {
+        return;
+    }
+
+    for (int i = 0; i < vmDebug->ipCount; ++i) {
+        free(vmDebug->output[i]);
+    }
+    free(vmDebug->output);
+    free(vmDebug->pointers);
+}

@@ -152,3 +152,5 @@ void walkThroughHeap(VM* vm);
 size_t getFreeMemoryAmount(VM* vm);
 
 size_t getUnusedMemoryAmountForTakenHeapBlocks(VM* vm);
+
+void destroyVmDebug(VmDebug* vmDebug);

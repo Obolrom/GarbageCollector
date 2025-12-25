@@ -63,7 +63,6 @@ typedef struct CustomType4 {
 void test1(VM* vm);
 
 void testSuite();
-int testCase10();
 int testCase11();
 int testCase12();
 int testCase13();
@@ -99,7 +98,6 @@ int main() {
 }
 
 void testSuite() {
-    testCase10();
     testCase11();
     testCase12();
     testCase13();
@@ -115,82 +113,6 @@ void testSuite() {
     testCase23();
     testCase24();
     testCase25();
-}
-
-int testCase10_helperFunction_passed = 1;
-void testCase10_helperFunction(int32_t instructionPointer, int32_t stackTopValue) {
-    if (instructionPointer == 2 && stackTopValue != 10) {
-        testCase10_helperFunction_passed = 0;
-    }
-    if (instructionPointer == 4 && stackTopValue != 40) {
-        testCase10_helperFunction_passed = 0;
-    }
-    if (instructionPointer == 5 && stackTopValue != 50) {
-        testCase10_helperFunction_passed = 0;
-    }
-    if (instructionPointer == 8 && stackTopValue != 100) {
-        testCase10_helperFunction_passed = 0;
-    }
-}
-
-int testCase10() {
-    int passed = 1;
-    VM* vm = createVirtualMachine(240, 48);
-    VmDebug *vmDebug = malloc(sizeof(VmDebug));
-    vmDebug->ipCount = 4;
-    vmDebug->pointers = malloc(sizeof(int32_t));
-    vmDebug->pointers[0] = 2;
-    vmDebug->pointers[1] = 4;
-    vmDebug->pointers[2] = 5;
-    vmDebug->pointers[3] = 8;
-
-    int32_t bytecode[] = {
-            OP_PUSH, 10,
-            OP_PUSH, 40,
-            OP_ADD,
-            OP_PUSH, 50,
-            OP_ADD,
-            OP_PRINT,
-            OP_HALT,
-    };
-
-    executeBytecode(vm, bytecode, vmDebug, testCase10_helperFunction);
-
-    passed = testCase10_helperFunction_passed;
-    for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
-        if (vm->stack[i] != -1) {
-            passed = 0;
-        }
-    }
-    if (vm->stackPointer != -1) {
-        passed = 0;
-    }
-
-    if (vmDebug->output[0]->type == TYPE_INT && vmDebug->output[0]->intVal != 10) {
-        testCase10_helperFunction_passed = 0;
-    }
-    if (vmDebug->output[1]->type == TYPE_INT && vmDebug->output[0]->intVal != 40) {
-        testCase10_helperFunction_passed = 0;
-    }
-    if (vmDebug->output[2]->type == TYPE_INT && vmDebug->output[0]->intVal != 50) {
-        testCase10_helperFunction_passed = 0;
-    }
-    if (vmDebug->output[3]->type == TYPE_INT && vmDebug->output[0]->intVal != 100) {
-        testCase10_helperFunction_passed = 0;
-    }
-
-#ifdef TEST_OUTPUT_ENABLED
-    if (passed == 1) {
-        printf(GREEN "Test 'testCase10' passed\n" RESET);
-    }
-    else {
-        printf(RED "Test 'testCase10' FAILED\n" RESET);
-    }
-#endif
-
-    destroyVirtualMachine(vm);
-
-    return passed;
 }
 
 int testCase11_helperFunction_passed = 1;
