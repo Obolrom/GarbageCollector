@@ -972,11 +972,10 @@ void test_9() {
 }
 
 void test_10() {
-    int passed = 0;
     VM* vm = createVirtualMachine(240, 48);
     VmDebug *vmDebug = malloc(sizeof(VmDebug));
     vmDebug->ipCount = 4;
-    vmDebug->pointers = malloc(sizeof(int32_t));
+    vmDebug->pointers = malloc(sizeof(int32_t) * vmDebug->ipCount);
     vmDebug->pointers[0] = 2;
     vmDebug->pointers[1] = 4;
     vmDebug->pointers[2] = 5;
@@ -1000,6 +999,10 @@ void test_10() {
                 "Expected to be -1"
         );
     }
+    TEST_ASSERT_TRUE_MESSAGE(
+            vm->stackPointer == -1,
+            "Expected stackPointer to be -1"
+    );
 
     TEST_ASSERT_TRUE_MESSAGE(
             vmDebug->output[0]->type == TYPE_INT && vmDebug->output[0]->intVal == 10,
@@ -1022,6 +1025,61 @@ void test_10() {
     destroyVirtualMachine(vm);
 }
 
+void test_11() {
+    VM* vm = createVirtualMachine(240, 48);
+    VmDebug *vmDebug = malloc(sizeof(VmDebug));
+    vmDebug->ipCount = 4;
+    vmDebug->pointers = malloc(sizeof(int32_t) * vmDebug->ipCount);
+    vmDebug->pointers[0] = 2;
+    vmDebug->pointers[1] = 4;
+    vmDebug->pointers[2] = 5;
+    vmDebug->pointers[3] = 10;
+
+    int32_t bytecode[] = {
+            OP_PUSH, 10,
+            OP_PUSH, 40,
+            OP_ADD,
+            OP_JMP, 10,
+            OP_PUSH, 50,
+            OP_ADD,
+            OP_PRINT,
+            OP_HALT,
+    };
+
+    executeBytecode(vm, bytecode, vmDebug, NULL);
+
+    for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
+        TEST_ASSERT_TRUE_MESSAGE(
+                vm->stack[i] == -1,
+                "Expected to be -1"
+        );
+    }
+    TEST_ASSERT_TRUE_MESSAGE(
+            vm->stackPointer == -1,
+            "Expected stackPointer to be -1"
+    );
+
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[0]->type == TYPE_INT && vmDebug->output[0]->intVal == 10,
+            "Expected output should be 10"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[1]->type == TYPE_INT && vmDebug->output[1]->intVal == 40,
+            "Expected output should be 40"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[2]->type == TYPE_INT && vmDebug->output[2]->intVal == 50,
+            "Expected output should be 50"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[3]->type == TYPE_INT && vmDebug->output[3]->intVal == 50,
+            "Expected output should be 100"
+    );
+
+    destroyVmDebug(vmDebug);
+    destroyVirtualMachine(vm);
+}
+
 int main() {
     UNITY_BEGIN();
 
@@ -1035,6 +1093,7 @@ int main() {
     RUN_TEST(test_8);
     RUN_TEST(test_9);
     RUN_TEST(test_10);
+    RUN_TEST(test_11);
 
     return UNITY_END();
 }
