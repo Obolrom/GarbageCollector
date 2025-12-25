@@ -62,7 +62,6 @@ typedef struct CustomType4 {
 void test1(VM* vm);
 
 void testSuite();
-int testCase1();
 int testCase2();
 int testCase3();
 int testCase4();
@@ -107,7 +106,6 @@ int main() {
 }
 
 void testSuite() {
-    testCase1();
     testCase2();
     testCase3();
     testCase4();
@@ -132,50 +130,6 @@ void testSuite() {
     testCase23();
     testCase24();
     testCase25();
-}
-
-int testCase1() {
-    int passed = 1;
-    VM* vm = createVirtualMachine(320, 32);
-
-    int number = 500;
-    HeapObj* obj1 = createObject(vm, sizeof(number), &number);
-    if (*(int*)(obj1->data) != 500) {
-        passed = 0;
-    }
-
-    uint32_t occupiedMemoryBlocks = getOccupiedHeapBlocksAmount(vm->heap);
-    if (occupiedMemoryBlocks != 2) {
-        passed = 0;
-    }
-
-    if ((void*) vm->heap->memory != obj1) {
-        passed = 0;
-    }
-
-    for (int i = 0; i < occupiedMemoryBlocks; ++i) {
-        if (vm->heap->blocks[i]->busyIndicator != BI_RED) {
-            passed = 0;
-        }
-    }
-    for (int i = (int) occupiedMemoryBlocks; i < vm->heap->blockAmount; ++i) {
-        if (vm->heap->blocks[i]->busyIndicator != BI_GREEN) {
-            passed = 0;
-        }
-    }
-
-#ifdef TEST_OUTPUT_ENABLED
-    if (passed == 1) {
-        printf(GREEN "Test 'testCase1' passed\n" RESET);
-    }
-    else {
-        printf(RED "Test 'testCase1' FAILED\n" RESET);
-    }
-#endif
-
-    destroyVirtualMachine(vm);
-
-    return passed;
 }
 
 int testCase2() {

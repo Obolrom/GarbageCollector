@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stddef.h>
 
 #define OPERATION_STACK_SIZE 256
 
