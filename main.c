@@ -910,7 +910,7 @@ int testCase10() {
             OP_HALT,
     };
 
-    executeBytecode(vm, bytecode, testCase10_helperFunction);
+    executeBytecode(vm, bytecode, NULL, testCase10_helperFunction);
 
     passed = testCase10_helperFunction_passed;
     for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
@@ -979,7 +979,7 @@ int testCase11() {
             OP_HALT,
     };
 
-    executeBytecode(vm, bytecode, testCase11_helperFunction);
+    executeBytecode(vm, bytecode, NULL, testCase11_helperFunction);
 
     passed = testCase11_helperFunction_passed;
     for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
@@ -1029,7 +1029,7 @@ int testCase12() {
             OP_HALT,
     };
 
-    executeBytecode(vm, bytecode, testCase12_helperFunction);
+    executeBytecode(vm, bytecode, NULL, testCase12_helperFunction);
 
     passed = testCase12_helperFunction_passed;
     for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
@@ -1085,7 +1085,7 @@ int testCase13() {
             OP_HALT,
     };
 
-    executeBytecode(vm, bytecode, testCase13_helperFunction);
+    executeBytecode(vm, bytecode, NULL, testCase13_helperFunction);
 
     passed = testCase13_helperFunction_passed;
     for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
@@ -1141,7 +1141,7 @@ int testCase14() {
             OP_HALT,
     };
 
-    executeBytecode(vm, bytecode, testCase14_helperFunction);
+    executeBytecode(vm, bytecode, NULL, testCase14_helperFunction);
 
     passed = testCase14_helperFunction_passed;
     for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
@@ -1197,7 +1197,7 @@ int testCase15() {
             OP_HALT,
     };
 
-    executeBytecode(vm, bytecode, testCase15_helperFunction);
+    executeBytecode(vm, bytecode, NULL, testCase15_helperFunction);
 
     passed = testCase15_helperFunction_passed;
     for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
@@ -1253,7 +1253,7 @@ int testCase16() {
             OP_HALT,
     };
 
-    executeBytecode(vm, bytecode, testCase16_helperFunction);
+    executeBytecode(vm, bytecode, NULL, testCase16_helperFunction);
 
     passed = testCase16_helperFunction_passed;
     for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
@@ -1327,7 +1327,7 @@ int testCase17() {
             OP_HALT,
     };
 
-    executeBytecode(vm, bytecode, testCase17_helperFunction);
+    executeBytecode(vm, bytecode, NULL, testCase17_helperFunction);
 
     passed = testCase17_helperFunction_passed;
     for (int i = 1; i < OPERATION_STACK_SIZE; ++i) {
@@ -1386,7 +1386,7 @@ int testCase18() {
             OP_HALT,
     };
 
-    executeBytecode(vm, bytecode, testCase18_helperFunction);
+    executeBytecode(vm, bytecode, NULL, testCase18_helperFunction);
 
     passed = testCase18_helperFunction_passed;
     for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
@@ -1442,7 +1442,7 @@ int testCase19() {
             OP_HALT,
     };
 
-    executeBytecode(vm, bytecode, testCase19_helperFunction);
+    executeBytecode(vm, bytecode, NULL, testCase19_helperFunction);
 
     passed = testCase19_helperFunction_passed;
     for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
@@ -1494,7 +1494,7 @@ int testCase20() {
             OP_HALT,
     };
 
-    executeBytecode(vm, bytecode, testCase20_helperFunction);
+    executeBytecode(vm, bytecode, NULL, testCase20_helperFunction);
 
     passed = testCase20_helperFunction_passed;
     for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
@@ -1546,7 +1546,7 @@ int testCase21() {
             OP_HALT,
     };
 
-    executeBytecode(vm, bytecode, testCase21_helperFunction);
+    executeBytecode(vm, bytecode, NULL, testCase21_helperFunction);
 
     passed = testCase21_helperFunction_passed;
     for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
@@ -1606,7 +1606,7 @@ int testCase22() {
             OP_RET
     };
 
-    executeBytecode(vm, bytecode, testCase22_helperFunction);
+    executeBytecode(vm, bytecode, NULL, testCase22_helperFunction);
 
     passed = testCase22_helperFunction_passed;
     for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
@@ -1680,7 +1680,7 @@ int testCase23() {
             OP_RET,
     };
 
-    executeBytecode(vm, bytecode, testCase23_helperFunction);
+    executeBytecode(vm, bytecode, NULL, testCase23_helperFunction);
 
     passed = testCase23_helperFunction_passed;
     for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
@@ -1759,7 +1759,7 @@ int testCase24() {
             OP_RET
     };
 
-    executeBytecode(vm, bytecode, testCase24_helperFunction);
+    executeBytecode(vm, bytecode, NULL, testCase24_helperFunction);
 
     passed = testCase24_helperFunction_passed;
     for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
@@ -1837,7 +1837,7 @@ int testCase25() {
             OP_RET
     };
 
-    executeBytecode(vm, bytecode, testCase25_helperFunction);
+    executeBytecode(vm, bytecode, NULL, testCase25_helperFunction);
 
     passed = testCase25_helperFunction_passed;
     for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {

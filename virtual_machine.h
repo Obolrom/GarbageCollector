@@ -108,6 +108,13 @@ struct HeapObject {
     void* data;
 };
 
+typedef struct VirtualMachineDebug {
+    int32_t ip;
+    VmValue* stackValue;
+
+    struct VirtualMachineDebug* next;
+} VmDebug;
+
 HeapObj* createObject(VM* vm, size_t dataSize, void* data);
 
 VmRetCode deleteObject(VM* vm, HeapObj* object);
@@ -116,7 +123,7 @@ void compactHeap(VM* vm, void (*func)(HeapObj*));
 
 VM* createVirtualMachine(uint32_t vmHeapSize, uint32_t vmHeapBlockSize);
 
-void executeBytecode(VM* vm, const int32_t* bytecode, void (*stackTopValueAtInstructionIndex)(int32_t, int32_t));
+void executeBytecode(VM* vm, const int32_t* bytecode, VmDebug* vmDebug, void (*stackTopValueAtInstructionIndex)(int32_t, int32_t));
 
 void destroyVirtualMachine(VM* vm);
 

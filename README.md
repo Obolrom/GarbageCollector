@@ -27,8 +27,8 @@
 13. `OP_CMP_GT` - opStack[top-1] > opStack[top]; pop; pop; push
 14. `OP_CMP_LTE` - opStack[top-1] <= opStack[top]; pop; pop; push
 15. `OP_CMP_GTE` - opStack[top-1] >= opStack[top]; pop; pop; push
-16. `CALL addr args_count` - functions call, puts the return address to callStack; copies arguments from operation stack to locals of stack frame
-17. `RET` - returns execution to caller function
+16. `OP_CALL addr args_count localsCount` - functions call, puts the return address to callStack; copies arguments from operation stack to locals of stack frame
+17. `OP_RET` - destroys current call stack frame and returns to the previous one
 
 ### Operations on variables
 1. `LOAD var_idx` - move call stack frame locals[var_idx] to opStack[top]

@@ -20,7 +20,7 @@ VM* createVirtualMachine(uint32_t vmHeapSize, uint32_t vmHeapBlockSize) {
     return virtualMachine;
 }
 
-void executeBytecode(VM* vm, const int32_t* bytecode, void (*stackTopValueAtInstructionIndex)(int32_t, int32_t)) {
+void executeBytecode(VM* vm, const int32_t* bytecode, VmDebug* vmDebug, void (*stackTopValueAtInstructionIndex)(int32_t, int32_t)) {
     for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
         vm->stack[i] = -1;
     }
