@@ -707,7 +707,6 @@ void test_8() {
         long test7;
         long test8;
     } Data4;
-    int passed = 1;
 
     VM* vm = createVirtualMachine(4000, 16);
 
@@ -873,6 +872,104 @@ void test_8() {
     destroyVirtualMachine(vm);
 }
 
+void test_9() {
+    typedef struct CustomType {
+        int test1;
+        long test2;
+        short test3;
+    } Data;
+
+    typedef struct CustomType3 {
+        int orderNum;
+        Data* data;
+        int test;
+        int test2;
+        long test3;
+        int test4;
+        long test5;
+        long test6;
+    } Data3;
+
+    typedef struct CustomType4 {
+        long test1;
+        long test2;
+        long test3;
+        long test4;
+        long test5;
+        long test6;
+        long test7;
+        long test8;
+    } Data4;
+    int passed = 1;
+
+    VM* vm = createVirtualMachine(240, 48);
+
+    int number = 500;
+    short littleNum = 120;
+    Data3 data3 = { 1, NULL, 2, 3, 4, 5, 6, 7 };
+    Data4 data4 = { 1, 2, 3, 4, -100, 6, 7, 700 };
+    int8_t byte = 10;
+
+    HeapObj* obj1 = createObject(vm, sizeof(number), &number);
+    HeapObj* obj2 = createObject(vm, sizeof(littleNum), &littleNum);
+    HeapObj* obj3 = createObject(vm, sizeof(littleNum), &littleNum);
+    HeapObj* obj4 = createObject(vm, sizeof(littleNum), &littleNum);
+    HeapObj* obj5 = createObject(vm, sizeof(littleNum), &littleNum);
+
+    uint32_t freeHeapBlocks1 = getFreeHeapBlocksAmount(vm->heap);
+    size_t freeHeapBytes1 = getFreeMemoryAmount(vm);
+    size_t fragmentedMemoryAmount1 = getUnusedMemoryAmountForTakenHeapBlocks(vm);
+
+    TEST_ASSERT_TRUE_MESSAGE(
+            freeHeapBlocks1 == 0,
+            "Expected freeHeapBlocks1 = 0"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            freeHeapBytes1 == 0,
+            "Expected freeHeapBytes1 = 0"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            fragmentedMemoryAmount1 == 68,
+            "Expected fragmentedMemoryAmount1 = 68"
+    );
+
+    TEST_ASSERT_EQUAL_INT_MESSAGE(
+            VM_RC_SUC_OBJ_DELETED,
+            deleteObject(vm, obj1),
+            "Expected returnCode should be VM_RC_SUC_OBJ_DELETED"
+    );
+    TEST_ASSERT_EQUAL_INT_MESSAGE(
+            VM_RC_SUC_OBJ_DELETED,
+            deleteObject(vm, obj3),
+            "Expected returnCode should be VM_RC_SUC_OBJ_DELETED"
+    );
+
+    uint32_t freeHeapBlocks2 = getFreeHeapBlocksAmount(vm->heap);
+    size_t freeHeapBytes2 = getFreeMemoryAmount(vm);
+    size_t fragmentedMemoryAmount2 = getUnusedMemoryAmountForTakenHeapBlocks(vm);
+
+    TEST_ASSERT_TRUE_MESSAGE(
+            freeHeapBlocks2 == 2,
+            "Expected freeHeapBlocks2 = 2"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            freeHeapBytes2 == 96,
+            "Expected freeHeapBytes2 = 96"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            fragmentedMemoryAmount2 == 42,
+            "Expected fragmentedMemoryAmount2 = 42"
+    );
+
+    HeapObj* obj6 = createObject(vm, sizeof(data3), &data3);
+    TEST_ASSERT_NOT_NULL_MESSAGE(
+            obj6,
+            "Expected non null pointer"
+    );
+
+    destroyVirtualMachine(vm);
+}
+
 int main() {
     UNITY_BEGIN();
 
@@ -884,6 +981,7 @@ int main() {
     RUN_TEST(test_6);
     RUN_TEST(test_7);
     RUN_TEST(test_8);
+    RUN_TEST(test_9);
 
     return UNITY_END();
 }

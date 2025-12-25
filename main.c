@@ -62,7 +62,6 @@ typedef struct CustomType4 {
 void test1(VM* vm);
 
 void testSuite();
-int testCase9();
 int testCase10();
 int testCase11();
 int testCase12();
@@ -99,7 +98,6 @@ int main() {
 }
 
 void testSuite() {
-    testCase9();
     testCase10();
     testCase11();
     testCase12();
@@ -116,72 +114,6 @@ void testSuite() {
     testCase23();
     testCase24();
     testCase25();
-}
-
-int testCase9() {
-    int passed = 1;
-    VM* vm = createVirtualMachine(240, 48);
-
-    int number = 500;
-    short littleNum = 120;
-    Data3 data3 = { 1, NULL, 2, 3, 4, 5, 6, 7 };
-    Data4 data4 = { 1, 2, 3, 4, -100, 6, 7, 700 };
-    int8_t byte = 10;
-
-    HeapObj* obj1 = createObject(vm, sizeof(number), &number);
-    HeapObj* obj2 = createObject(vm, sizeof(littleNum), &littleNum);
-    HeapObj* obj3 = createObject(vm, sizeof(littleNum), &littleNum);
-    HeapObj* obj4 = createObject(vm, sizeof(littleNum), &littleNum);
-    HeapObj* obj5 = createObject(vm, sizeof(littleNum), &littleNum);
-
-    uint32_t freeHeapBlocks1 = getFreeHeapBlocksAmount(vm->heap);
-    size_t freeHeapBytes1 = getFreeMemoryAmount(vm);
-    size_t fragmentedMemoryAmount1 = getUnusedMemoryAmountForTakenHeapBlocks(vm);
-
-    if (freeHeapBlocks1 != 0) {
-        passed = 0;
-    }
-    if (freeHeapBytes1 != 0) {
-        passed = 0;
-    }
-    if (fragmentedMemoryAmount1 != 68) {
-        passed = 0;
-    }
-
-    deleteObject(vm, obj1);
-    deleteObject(vm, obj3);
-
-    uint32_t freeHeapBlocks2 = getFreeHeapBlocksAmount(vm->heap);
-    size_t freeHeapBytes2 = getFreeMemoryAmount(vm);
-    size_t fragmentedMemoryAmount2 = getUnusedMemoryAmountForTakenHeapBlocks(vm);
-
-    if (freeHeapBlocks2 != 2) {
-        passed = 0;
-    }
-    if (freeHeapBytes2 != 96) {
-        passed = 0;
-    }
-    if (fragmentedMemoryAmount2 != 42) {
-        passed = 0;
-    }
-
-    HeapObj* obj6 = createObject(vm, sizeof(data3), &data3);
-    if (obj6 == NULL) {
-        passed = 0;
-    }
-
-#ifdef TEST_OUTPUT_ENABLED
-    if (passed == 1) {
-        printf(GREEN "Test 'testCase9' passed\n" RESET);
-    }
-    else {
-        printf(RED "Test 'testCase9' FAILED\n" RESET);
-    }
-#endif
-
-    destroyVirtualMachine(vm);
-
-    return passed;
 }
 
 int testCase10_helperFunction_passed = 1;
