@@ -679,6 +679,200 @@ void test_7() {
     destroyVirtualMachine(vm);
 }
 
+void test_8() {
+    typedef struct CustomType {
+        int test1;
+        long test2;
+        short test3;
+    } Data;
+
+    typedef struct CustomType3 {
+        int orderNum;
+        Data* data;
+        int test;
+        int test2;
+        long test3;
+        int test4;
+        long test5;
+        long test6;
+    } Data3;
+
+    typedef struct CustomType4 {
+        long test1;
+        long test2;
+        long test3;
+        long test4;
+        long test5;
+        long test6;
+        long test7;
+        long test8;
+    } Data4;
+    int passed = 1;
+
+    VM* vm = createVirtualMachine(4000, 16);
+
+    int number = 500;
+    short littleNum = 120;
+    Data3 data3 = { 1, NULL, 2, 3, 4, 5, 6, 7 };
+    Data4 data4 = { 1, 2, 3, 4, -100, 6, 7, 700 };
+    int8_t byte = 10;
+
+    HeapObj* obj1 = createObject(vm, sizeof(number), &number);
+    HeapObj* obj2 = createObject(vm, sizeof(littleNum), &littleNum);
+    HeapObj* obj3 = createObject(vm, sizeof(data3), &data3);
+    HeapObj* obj4 = createObject(vm, sizeof(byte), &byte);
+    HeapObj* obj5 = createObject(vm, sizeof(data4), &data4);
+
+    TEST_ASSERT_TRUE_MESSAGE(
+            *(int*)(obj1->data) == 500,
+            "Expected obj1 data = 500"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            *(int*)(obj2->data) == 120,
+            "Expected obj2 data = 120"
+    );
+    TEST_ASSERT_NULL_MESSAGE(
+            ((Data3*)(obj3->data))->data,
+            "Expected obj3 is null"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            ((Data3*)(obj3->data))->orderNum == 1,
+            "Expected obj3 data.orderNum = 1"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            *(int8_t *)(obj4->data) == 10,
+            "Expected obj4 data = 10"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            ((Data4 *)(obj5->data))->test5 == -100,
+            "Expected obj5 data.test5 = 10"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            ((Data4 *)(obj5->data))->test8 == 700,
+            "Expected obj5 data.test8 = 700"
+    );
+
+    uint32_t occupiedMemoryBlocks = getOccupiedHeapBlocksAmount(vm->heap);
+    TEST_ASSERT_TRUE_MESSAGE(
+            occupiedMemoryBlocks == 21,
+            "Expected occupiedMemoryBlocks = 21"
+    );
+
+    TEST_ASSERT_TRUE_MESSAGE(
+            (void*) vm->heap->memory == obj1,
+            "Expected obj1 is at the beginning of heap"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            ((void*) &vm->heap->memory[vm->heapBlockSize * 3]) == obj2,
+            "Expected obj2 pointer"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            ((void*) &vm->heap->memory[vm->heapBlockSize * 6]) == obj3,
+            "Expected obj3 pointer"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            ((void*) &vm->heap->memory[vm->heapBlockSize * 12]) == obj4,
+            "Expected obj4 pointer"
+    );
+
+    for (int i = 0; i < occupiedMemoryBlocks; ++i) {
+        TEST_ASSERT_EQUAL_INT_MESSAGE(
+                BI_RED,
+                vm->heap->blocks[i]->busyIndicator,
+                "Expected free heap blocks to be BI_RED"
+        );
+    }
+    for (int i = (int) occupiedMemoryBlocks; i < vm->heap->blockAmount; ++i) {
+        TEST_ASSERT_EQUAL_INT_MESSAGE(
+                BI_GREEN,
+                vm->heap->blocks[i]->busyIndicator,
+                "Expected free heap blocks to be BI_GREEN"
+        );
+    }
+
+    TEST_ASSERT_EQUAL_INT_MESSAGE(
+            VM_RC_SUC_OBJ_DELETED,
+            deleteObject(vm, obj1),
+            "Expected returnCode should be VM_RC_SUC_OBJ_DELETED"
+    );
+    TEST_ASSERT_EQUAL_INT_MESSAGE(
+            VM_RC_SUC_OBJ_DELETED,
+            deleteObject(vm, obj2),
+            "Expected returnCode should be VM_RC_SUC_OBJ_DELETED"
+    );
+    TEST_ASSERT_EQUAL_INT_MESSAGE(
+            VM_RC_SUC_OBJ_DELETED,
+            deleteObject(vm, obj3),
+            "Expected returnCode should be VM_RC_SUC_OBJ_DELETED"
+    );
+
+    HeapObj* objData4_2 = createObject(vm, sizeof(data4), &data4);
+
+    TEST_ASSERT_TRUE_MESSAGE(
+            ((Data4 *)(objData4_2->data))->test5 == -100,
+            "Expected obj4_2 data.test5 = -100"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            ((Data4 *)(objData4_2->data))->test8 == 700,
+            "Expected obj4_2 data.test8 = 700"
+    );
+
+    occupiedMemoryBlocks = getOccupiedHeapBlocksAmount(vm->heap);
+    TEST_ASSERT_TRUE_MESSAGE(
+            occupiedMemoryBlocks == 15,
+            "Expected occupiedMemoryBlocks = 15"
+    );
+
+    for (int i = 0; i < vm->heap->blockAmount; ++i) {
+        if (i == 0 || i == 1 || i == 2 || i == 3 || i == 4 || i == 5 || i == 12 || i == 13 || i == 14 ||
+            i == 15 || i == 16 || i == 17 || i == 18 || i == 19 || i == 20) {
+            TEST_ASSERT_EQUAL_INT_MESSAGE(
+                    BI_RED,
+                    vm->heap->blocks[i]->busyIndicator,
+                    "Expected free heap blocks to be BI_RED"
+            );
+        }
+        else {
+            TEST_ASSERT_EQUAL_INT_MESSAGE(
+                    BI_GREEN,
+                    vm->heap->blocks[i]->busyIndicator,
+                    "Expected free heap blocks to be BI_GREEN"
+            );
+        }
+    }
+
+    TEST_ASSERT_EQUAL_INT_MESSAGE(
+            VM_RC_SUC_OBJ_DELETED,
+            deleteObject(vm, objData4_2),
+            "Expected returnCode should be VM_RC_SUC_OBJ_DELETED"
+    );
+    TEST_ASSERT_EQUAL_INT_MESSAGE(
+            VM_RC_SUC_OBJ_DELETED,
+            deleteObject(vm, obj4),
+            "Expected returnCode should be VM_RC_SUC_OBJ_DELETED"
+    );
+    TEST_ASSERT_EQUAL_INT_MESSAGE(
+            VM_RC_SUC_OBJ_DELETED,
+            deleteObject(vm, obj5),
+            "Expected returnCode should be VM_RC_SUC_OBJ_DELETED"
+    );
+    TEST_ASSERT_EQUAL_INT_MESSAGE(
+            VM_RC_ERROR_OBJ_ALREADY_DELETED,
+            deleteObject(vm, obj1),
+            "Expected returnCode should be VM_RC_ERROR_OBJ_ALREADY_DELETED"
+    );
+
+    for (int i = 0; i < vm->heap->blockAmount; ++i) {
+        TEST_ASSERT_EQUAL_INT_MESSAGE(
+                BI_GREEN,
+                vm->heap->blocks[i]->busyIndicator,
+                "Expected free heap blocks to be BI_GREEN"
+        );
+    }
+
+    destroyVirtualMachine(vm);
+}
+
 int main() {
     UNITY_BEGIN();
 
@@ -689,6 +883,7 @@ int main() {
     RUN_TEST(test_5);
     RUN_TEST(test_6);
     RUN_TEST(test_7);
+    RUN_TEST(test_8);
 
     return UNITY_END();
 }
