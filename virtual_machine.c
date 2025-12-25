@@ -35,7 +35,7 @@ void executeBytecode(VM* vm, const int32_t* bytecode, VmDebug* vmDebug, void (*s
             for (int i = 0; i < vmDebug->ipCount; ++i) {
                 if (vmDebug->pointers[i] == ip - 1) {
                     if (vmDebug->output == NULL) {
-                        vmDebug->output = malloc(sizeof(VmValue*) * vmDebug->ipCount);
+                        vmDebug->output = calloc(vmDebug->ipCount, sizeof(VmValue*));
                     }
                     VmValue* debugValue = malloc(sizeof(VmValue));
                     debugValue->type = TYPE_INT;
@@ -522,9 +522,12 @@ void destroyVmDebug(VmDebug* vmDebug) {
         return;
     }
 
-    for (int i = 0; i < vmDebug->ipCount; ++i) {
-        free(vmDebug->output[i]);
+    if (vmDebug->output != NULL) {
+        for (int i = 0; i < vmDebug->ipCount; ++i) {
+            free(vmDebug->output[i]);
+        }
+        free(vmDebug->output);
     }
-    free(vmDebug->output);
     free(vmDebug->pointers);
+    free(vmDebug);
 }
