@@ -10,18 +10,21 @@ void test_1() {
 
     int number = 500;
     HeapObj* obj1 = createObject(vm, sizeof(number), &number);
-    if (*(int*)(obj1->data) != 500) {
-        passed = 0;
-    }
+    TEST_ASSERT_FALSE_MESSAGE(
+        *(int*)(obj1->data) != 500,
+        "Expected obj data is 500"
+    );
 
     uint32_t occupiedMemoryBlocks = getOccupiedHeapBlocksAmount(vm->heap);
-    if (occupiedMemoryBlocks != 2) {
-        passed = 0;
-    }
+    TEST_ASSERT_FALSE_MESSAGE(
+        occupiedMemoryBlocks != 2,
+        "Expected occupiedMemoryBlocks = 2"
+    );
 
-    if ((void*) vm->heap->memory != obj1) {
-        passed = 0;
-    }
+    TEST_ASSERT_FALSE_MESSAGE(
+        (void*) vm->heap->memory != obj1,
+        "Expected heap memory pointer is equal to obj1 pointer"
+    );
 
     for (int i = 0; i < occupiedMemoryBlocks; ++i) {
         TEST_ASSERT_EQUAL_INT_MESSAGE(
