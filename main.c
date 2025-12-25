@@ -62,7 +62,6 @@ typedef struct CustomType4 {
 void test1(VM* vm);
 
 void testSuite();
-int testCase5();
 int testCase6();
 int testCase7();
 int testCase8();
@@ -103,7 +102,6 @@ int main() {
 }
 
 void testSuite() {
-    testCase5();
     testCase6();
     testCase7();
     testCase8();
@@ -124,103 +122,6 @@ void testSuite() {
     testCase23();
     testCase24();
     testCase25();
-}
-
-int testCase5() {
-    int passed = 1;
-    VM* vm = createVirtualMachine(4000, 16);
-
-    int number = 500;
-    short littleNum = 120;
-    Data3 data3 = { 1, NULL, 2, 3, 4, 5, 6, 7 };
-    int8_t byte = 10;
-
-    HeapObj* obj1 = createObject(vm, sizeof(number), &number);
-    HeapObj* obj2 = createObject(vm, sizeof(littleNum), &littleNum);
-    HeapObj* obj3 = createObject(vm, sizeof(data3), &data3);
-    HeapObj* obj4 = createObject(vm, sizeof(byte), &byte);
-    if (*(int*)(obj1->data) != 500) {
-        passed = 0;
-    }
-    if (*(short*)(obj2->data) != 120) {
-        passed = 0;
-    }
-    if (((Data3*)(obj3->data))->data != NULL) {
-        passed = 0;
-    }
-    if (((Data3*)(obj3->data))->orderNum != 1) {
-        passed = 0;
-    }
-    if (*(int8_t *)(obj4->data) != 10) {
-        passed = 0;
-    }
-
-    uint32_t occupiedMemoryBlocks = getOccupiedHeapBlocksAmount(vm->heap);
-    if (occupiedMemoryBlocks != 15) {
-        passed = 0;
-    }
-
-    if ((void*) vm->heap->memory != obj1) {
-        passed = 0;
-    }
-    if (((void*) &vm->heap->memory[vm->heapBlockSize * 3]) != obj2) {
-        passed = 0;
-    }
-    if (((void*) &vm->heap->memory[vm->heapBlockSize * 6]) != obj3) {
-        passed = 0;
-    }
-    if (((void*) &vm->heap->memory[vm->heapBlockSize * 12]) != obj4) {
-        passed = 0;
-    }
-
-    for (int i = 0; i < occupiedMemoryBlocks; ++i) {
-        if (vm->heap->blocks[i]->busyIndicator != BI_RED) {
-            passed = 0;
-        }
-    }
-    for (int i = (int) occupiedMemoryBlocks; i < vm->heap->blockAmount; ++i) {
-        if (vm->heap->blocks[i]->busyIndicator != BI_GREEN) {
-            passed = 0;
-        }
-    }
-
-    for (int i = 0; i < 3; ++i) {
-        vm->heap->blocks[i]->busyIndicator = BI_GREEN;
-    }
-    if ((void*) vm->heap->memory != findFreeBlockAddress(vm, 10)) {
-        passed = 0;
-    }
-    if (vm->heap->blocks[0]->busyIndicator != BI_RED) {
-        passed = 0;
-    }
-    if (vm->heap->blocks[1]->busyIndicator != BI_GREEN) {
-        passed = 0;
-    }
-    if (vm->heap->blocks[2]->busyIndicator != BI_GREEN) {
-        passed = 0;
-    }
-    for (int i = 3; i < occupiedMemoryBlocks; ++i) {
-        if (vm->heap->blocks[i]->busyIndicator != BI_RED) {
-            passed = 0;
-        }
-    }
-
-    if (getOccupiedHeapBlocksAmount(vm->heap) != 13) {
-        passed = 0;
-    }
-
-#ifdef TEST_OUTPUT_ENABLED
-    if (passed == 1) {
-        printf(GREEN "Test 'testCase5' passed\n" RESET);
-    }
-    else {
-        printf(RED "Test 'testCase5' FAILED\n" RESET);
-    }
-#endif
-
-    destroyVirtualMachine(vm);
-
-    return passed;
 }
 
 int testCase6() {

@@ -226,6 +226,131 @@ void test_4() {
     destroyVirtualMachine(vm);
 }
 
+void test_5() {
+    typedef struct CustomType {
+        int test1;
+        long test2;
+        short test3;
+    } Data;
+
+    typedef struct CustomType3 {
+        int orderNum;
+        Data* data;
+        int test;
+        int test2;
+        long test3;
+        int test4;
+        long test5;
+        long test6;
+    } Data3;
+
+    VM* vm = createVirtualMachine(4000, 16);
+
+    int number = 500;
+    short littleNum = 120;
+    Data3 data3 = { 1, NULL, 2, 3, 4, 5, 6, 7 };
+    int8_t byte = 10;
+
+    HeapObj* obj1 = createObject(vm, sizeof(number), &number);
+    HeapObj* obj2 = createObject(vm, sizeof(littleNum), &littleNum);
+    HeapObj* obj3 = createObject(vm, sizeof(data3), &data3);
+    HeapObj* obj4 = createObject(vm, sizeof(byte), &byte);
+    TEST_ASSERT_TRUE_MESSAGE(
+            *(int*)(obj1->data) == 500,
+            "Expected obj1 data = 500"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            *(int*)(obj2->data) == 120,
+            "Expected obj2 data = 120"
+    );
+    TEST_ASSERT_NULL_MESSAGE(
+            ((Data3*)(obj3->data))->data,
+            "Expected obj3 is null"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            ((Data3*)(obj3->data))->orderNum == 1,
+            "Expected obj3 data.orderNum = 1"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            *(int8_t *)(obj4->data) == 10,
+            "Expected obj4 data = 10"
+    );
+
+    uint32_t occupiedMemoryBlocks = getOccupiedHeapBlocksAmount(vm->heap);
+    TEST_ASSERT_TRUE_MESSAGE(
+            occupiedMemoryBlocks == 15,
+            "Expected occupiedMemoryBlocks = 15"
+    );
+
+    TEST_ASSERT_TRUE_MESSAGE(
+            (void*) vm->heap->memory == obj1,
+            "Expected obj1 is at the beginning of heap"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            ((void*) &vm->heap->memory[vm->heapBlockSize * 3]) == obj2,
+            "Expected obj2 pointer"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            ((void*) &vm->heap->memory[vm->heapBlockSize * 6]) == obj3,
+            "Expected obj3 pointer"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            ((void*) &vm->heap->memory[vm->heapBlockSize * 12]) == obj4,
+            "Expected obj4 pointer"
+    );
+
+    for (int i = 0; i < occupiedMemoryBlocks; ++i) {
+        TEST_ASSERT_EQUAL_INT_MESSAGE(
+                BI_RED,
+                vm->heap->blocks[i]->busyIndicator,
+                "Expected free heap blocks to be BI_RED"
+        );
+    }
+    for (int i = (int) occupiedMemoryBlocks; i < vm->heap->blockAmount; ++i) {
+        TEST_ASSERT_EQUAL_INT_MESSAGE(
+                BI_GREEN,
+                vm->heap->blocks[i]->busyIndicator,
+                "Expected free heap blocks to be BI_GREEN"
+        );
+    }
+
+    for (int i = 0; i < 3; ++i) {
+        vm->heap->blocks[i]->busyIndicator = BI_GREEN;
+    }
+    void* freeBlockPointer = findFreeBlockAddress(vm, 10);
+    TEST_ASSERT_TRUE_MESSAGE(
+            (void*) vm->heap->memory == freeBlockPointer,
+            "Expected freeBlockPointer is at the beginning of heap"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            vm->heap->blocks[0]->busyIndicator == BI_RED,
+            "Expected heap.blocks[0] should be BI_RED"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            vm->heap->blocks[1]->busyIndicator == BI_GREEN,
+            "Expected heap.blocks[1] should be BI_GREEN"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            vm->heap->blocks[2]->busyIndicator == BI_GREEN,
+            "Expected heap.blocks[2] should be BI_GREEN"
+    );
+    for (int i = 3; i < occupiedMemoryBlocks; ++i) {
+        TEST_ASSERT_EQUAL_INT_MESSAGE(
+                BI_RED,
+                vm->heap->blocks[i]->busyIndicator,
+                "Expected free heap blocks to be BI_RED"
+        );
+    }
+
+    TEST_ASSERT_EQUAL_INT_MESSAGE(
+            13,
+            getOccupiedHeapBlocksAmount(vm->heap),
+            "Expected occupied heap size should be 13"
+    );
+
+    destroyVirtualMachine(vm);
+}
+
 int main() {
     UNITY_BEGIN();
 
@@ -233,6 +358,7 @@ int main() {
     RUN_TEST(test_2);
     RUN_TEST(test_3);
     RUN_TEST(test_4);
+    RUN_TEST(test_5);
 
     return UNITY_END();
 }
