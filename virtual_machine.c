@@ -30,6 +30,20 @@ void executeBytecode(VM* vm, const int32_t* bytecode, VmDebug* vmDebug, void (*s
 
     for (int ip = 0; ;) {
         int32_t instruction = bytecode[ip++];
+
+        if (vmDebug != NULL) {
+            for (int i = 0; i < vmDebug->ipCount; ++i) {
+                if (vmDebug->pointers[i] == ip - 1) {
+                    if (vmDebug->output == NULL) {
+                        vmDebug->output = malloc(sizeof(VmValue*) * vmDebug->ipCount);
+                    }
+                    VmValue* debugValue = malloc(sizeof(VmValue));
+                    debugValue->type = TYPE_INT;
+                    debugValue->intVal = vm->stack[vm->stackPointer];
+                    vmDebug->output[i] = debugValue;
+                }
+            }
+        }
         if (stackTopValueAtInstructionIndex != NULL) {
             stackTopValueAtInstructionIndex(ip - 1, vm->stack[vm->stackPointer]);
         }

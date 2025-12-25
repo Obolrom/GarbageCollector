@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "virtual_machine.h"
 
 #define TEST_OUTPUT_ENABLED
@@ -135,6 +136,13 @@ void testCase10_helperFunction(int32_t instructionPointer, int32_t stackTopValue
 int testCase10() {
     int passed = 1;
     VM* vm = createVirtualMachine(240, 48);
+    VmDebug *vmDebug = malloc(sizeof(VmDebug));
+    vmDebug->ipCount = 4;
+    vmDebug->pointers = malloc(sizeof(int32_t));
+    vmDebug->pointers[0] = 2;
+    vmDebug->pointers[1] = 4;
+    vmDebug->pointers[2] = 5;
+    vmDebug->pointers[3] = 8;
 
     int32_t bytecode[] = {
             OP_PUSH, 10,
@@ -146,7 +154,7 @@ int testCase10() {
             OP_HALT,
     };
 
-    executeBytecode(vm, bytecode, NULL, testCase10_helperFunction);
+    executeBytecode(vm, bytecode, vmDebug, testCase10_helperFunction);
 
     passed = testCase10_helperFunction_passed;
     for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
@@ -156,6 +164,19 @@ int testCase10() {
     }
     if (vm->stackPointer != -1) {
         passed = 0;
+    }
+
+    if (vmDebug->output[0]->type == TYPE_INT && vmDebug->output[0]->intVal != 10) {
+        testCase10_helperFunction_passed = 0;
+    }
+    if (vmDebug->output[1]->type == TYPE_INT && vmDebug->output[0]->intVal != 40) {
+        testCase10_helperFunction_passed = 0;
+    }
+    if (vmDebug->output[2]->type == TYPE_INT && vmDebug->output[0]->intVal != 50) {
+        testCase10_helperFunction_passed = 0;
+    }
+    if (vmDebug->output[3]->type == TYPE_INT && vmDebug->output[0]->intVal != 100) {
+        testCase10_helperFunction_passed = 0;
     }
 
 #ifdef TEST_OUTPUT_ENABLED
