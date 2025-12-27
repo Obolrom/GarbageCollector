@@ -976,6 +976,7 @@ void test_10() {
     VmDebug *vmDebug = malloc(sizeof(VmDebug));
     vmDebug->ipCount = 4;
     vmDebug->pointers = malloc(sizeof(int32_t) * vmDebug->ipCount);
+    vmDebug->output = calloc(vmDebug->ipCount, sizeof(VmValue*));
     vmDebug->pointers[0] = 2;
     vmDebug->pointers[1] = 4;
     vmDebug->pointers[2] = 5;
@@ -1030,6 +1031,7 @@ void test_11() {
     VmDebug *vmDebug = malloc(sizeof(VmDebug));
     vmDebug->ipCount = 4;
     vmDebug->pointers = malloc(sizeof(int32_t) * vmDebug->ipCount);
+    vmDebug->output = calloc(vmDebug->ipCount, sizeof(VmValue*));
     vmDebug->pointers[0] = 2;
     vmDebug->pointers[1] = 4;
     vmDebug->pointers[2] = 5;
@@ -1080,6 +1082,499 @@ void test_11() {
     destroyVirtualMachine(vm);
 }
 
+void test_12() {
+    VM* vm = createVirtualMachine(240, 48);
+    VmDebug *vmDebug = malloc(sizeof(VmDebug));
+    vmDebug->ipCount = 2;
+    vmDebug->pointers = malloc(sizeof(int32_t) * vmDebug->ipCount);
+    vmDebug->output = calloc(vmDebug->ipCount, sizeof(VmValue*));
+    vmDebug->pointers[0] = 5;
+    vmDebug->pointers[1] = 8;
+
+    int32_t bytecode[] = {
+            OP_PUSH, 10,
+            OP_PUSH, 40,
+            OP_ADD,
+            OP_PUSH, 20,
+            OP_SUB,
+            OP_PRINT,
+            OP_HALT,
+    };
+
+    executeBytecode(vm, bytecode, vmDebug, NULL);
+
+    for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
+        TEST_ASSERT_TRUE_MESSAGE(
+                vm->stack[i] == -1,
+                "Expected to be -1"
+        );
+    }
+    TEST_ASSERT_TRUE_MESSAGE(
+            vm->stackPointer == -1,
+            "Expected stackPointer to be -1"
+    );
+
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[0]->type == TYPE_INT && vmDebug->output[0]->intVal == 50,
+            "Expected output should be 50"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[1]->type == TYPE_INT && vmDebug->output[1]->intVal == 30,
+            "Expected output should be 30"
+    );
+
+    destroyVmDebug(vmDebug);
+    destroyVirtualMachine(vm);
+}
+
+void test_13() {
+    VM* vm = createVirtualMachine(240, 48);
+    VmDebug *vmDebug = malloc(sizeof(VmDebug));
+    vmDebug->ipCount = 2;
+    vmDebug->pointers = malloc(sizeof(int32_t) * vmDebug->ipCount);
+    vmDebug->output = calloc(vmDebug->ipCount, sizeof(VmValue*));
+    vmDebug->pointers[0] = 7;
+    vmDebug->pointers[1] = 17;
+
+    // should print 21 in stdout if VM_INTERPRETER_STDOUT_ENABLED
+    int32_t bytecode[] = {
+            OP_PUSH, 21,
+            OP_PUSH, -10,
+            OP_PUSH, 10,
+            OP_ADD,
+            OP_JZ, 17,
+            OP_PUSH, 100,
+            OP_PUSH, 200,
+            OP_PUSH, 300,
+            OP_PRINT,
+            OP_PRINT,
+            OP_PRINT,
+            OP_HALT,
+    };
+
+    executeBytecode(vm, bytecode, vmDebug, NULL);
+
+    for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
+        TEST_ASSERT_TRUE_MESSAGE(
+                vm->stack[i] == -1,
+                "Expected to be -1"
+        );
+    }
+    TEST_ASSERT_TRUE_MESSAGE(
+            vm->stackPointer == -1,
+            "Expected stackPointer to be -1"
+    );
+
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[0]->type == TYPE_INT && vmDebug->output[0]->intVal == 0,
+            "Expected output should be 0"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[1]->type == TYPE_INT && vmDebug->output[1]->intVal == 21,
+            "Expected output should be 21"
+    );
+
+    destroyVmDebug(vmDebug);
+    destroyVirtualMachine(vm);
+}
+
+void test_14() {
+    VM* vm = createVirtualMachine(240, 48);
+    VmDebug *vmDebug = malloc(sizeof(VmDebug));
+    vmDebug->ipCount = 2;
+    vmDebug->pointers = malloc(sizeof(int32_t) * vmDebug->ipCount);
+    vmDebug->output = calloc(vmDebug->ipCount, sizeof(VmValue*));
+    vmDebug->pointers[0] = 7;
+    vmDebug->pointers[1] = 17;
+
+    // should print 21 in stdout if VM_INTERPRETER_STDOUT_ENABLED
+    int32_t bytecode[] = {
+            OP_PUSH, 21,
+            OP_PUSH, -1,
+            OP_PUSH, 10,
+            OP_ADD,
+            OP_JNZ, 17,
+            OP_PUSH, 100,
+            OP_PUSH, 200,
+            OP_PUSH, 300,
+            OP_PRINT,
+            OP_PRINT,
+            OP_PRINT,
+            OP_HALT,
+    };
+
+    executeBytecode(vm, bytecode, vmDebug, NULL);
+
+    for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
+        TEST_ASSERT_TRUE_MESSAGE(
+                vm->stack[i] == -1,
+                "Expected to be -1"
+        );
+    }
+    TEST_ASSERT_TRUE_MESSAGE(
+            vm->stackPointer == -1,
+            "Expected stackPointer to be -1"
+    );
+
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[0]->type == TYPE_INT && vmDebug->output[0]->intVal == 9,
+            "Expected output should be 9"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[1]->type == TYPE_INT && vmDebug->output[1]->intVal == 21,
+            "Expected output should be 21"
+    );
+
+    destroyVmDebug(vmDebug);
+    destroyVirtualMachine(vm);
+}
+
+void test_15() {
+    VM* vm = createVirtualMachine(240, 48);
+    VmDebug *vmDebug = malloc(sizeof(VmDebug));
+    vmDebug->ipCount = 3;
+    vmDebug->pointers = malloc(sizeof(int32_t) * vmDebug->ipCount);
+    vmDebug->output = calloc(vmDebug->ipCount, sizeof(VmValue*));
+    vmDebug->pointers[0] = 2;
+    vmDebug->pointers[1] = 4;
+    vmDebug->pointers[2] = 12;
+
+    // should print 77 in stdout if VM_INTERPRETER_STDOUT_ENABLED
+    int32_t bytecode[] = {
+            OP_PUSH, 15,
+            OP_PUSH, 15,
+            OP_JEQ, 10,
+            OP_PUSH, 33,
+            OP_PRINT,
+            OP_HALT,
+            OP_PUSH, 77,
+            OP_PRINT,
+            OP_HALT,
+    };
+
+    executeBytecode(vm, bytecode, vmDebug, NULL);
+
+    for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
+        TEST_ASSERT_TRUE_MESSAGE(
+                vm->stack[i] == -1,
+                "Expected to be -1"
+        );
+    }
+    TEST_ASSERT_TRUE_MESSAGE(
+            vm->stackPointer == -1,
+            "Expected stackPointer to be -1"
+    );
+
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[0]->type == TYPE_INT && vmDebug->output[0]->intVal == 15,
+            "Expected output should be 15"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[1]->type == TYPE_INT && vmDebug->output[1]->intVal == 15,
+            "Expected output should be 15"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[2]->type == TYPE_INT && vmDebug->output[2]->intVal == 77,
+            "Expected output should be 77"
+    );
+
+    destroyVmDebug(vmDebug);
+    destroyVirtualMachine(vm);
+}
+
+void test_16() {
+    VM* vm = createVirtualMachine(240, 48);
+    VmDebug *vmDebug = malloc(sizeof(VmDebug));
+    vmDebug->ipCount = 3;
+    vmDebug->pointers = malloc(sizeof(int32_t) * vmDebug->ipCount);
+    vmDebug->output = calloc(vmDebug->ipCount, sizeof(VmValue*));
+    vmDebug->pointers[0] = 2;
+    vmDebug->pointers[1] = 4;
+    vmDebug->pointers[2] = 8;
+
+    // should print 33 in stdout if VM_INTERPRETER_STDOUT_ENABLED
+    int32_t bytecode[] = {
+            OP_PUSH, 15,
+            OP_PUSH, 11,
+            OP_JEQ, 10,
+            OP_PUSH, 33,
+            OP_PRINT,
+            OP_HALT,
+            OP_PUSH, 77,
+            OP_PRINT,
+            OP_HALT,
+    };
+
+    executeBytecode(vm, bytecode, vmDebug, NULL);
+
+    for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
+        TEST_ASSERT_TRUE_MESSAGE(
+                vm->stack[i] == -1,
+                "Expected to be -1"
+        );
+    }
+    TEST_ASSERT_TRUE_MESSAGE(
+            vm->stackPointer == -1,
+            "Expected stackPointer to be -1"
+    );
+
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[0]->type == TYPE_INT && vmDebug->output[0]->intVal == 15,
+            "Expected output should be 15"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[1]->type == TYPE_INT && vmDebug->output[1]->intVal == 11,
+            "Expected output should be 11"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[2]->type == TYPE_INT && vmDebug->output[2]->intVal == 33,
+            "Expected output should be 33"
+    );
+
+    destroyVmDebug(vmDebug);
+    destroyVirtualMachine(vm);
+}
+
+void test_17() {
+    VM* vm = createVirtualMachine(240, 48);
+    VmDebug *vmDebug = calloc(1, sizeof(VmDebug));
+    vmDebug->ipCount = 8;
+    vmDebug->pointers = malloc(sizeof(int32_t) * vmDebug->ipCount);
+    vmDebug->output = calloc(vmDebug->ipCount, sizeof(VmValue*));
+    vmDebug->pointers[0] = 2;
+    vmDebug->pointers[1] = 4;
+    vmDebug->pointers[2] = 6;
+    vmDebug->pointers[3] = 7;
+    vmDebug->pointers[4] = 9;
+    vmDebug->pointers[5] = 11;
+    vmDebug->pointers[6] = 13;
+    vmDebug->pointers[7] = 15;
+
+    // should print 300; 200; 100 in stdout if VM_INTERPRETER_STDOUT_ENABLED
+    int32_t bytecode[] = {
+            OP_PUSH, 21,
+            OP_PUSH, -10,
+            OP_PUSH, 10,
+            OP_ADD,
+            OP_JNZ, 17,
+            OP_PUSH, 100,
+            OP_PUSH, 200,
+            OP_PUSH, 300,
+            OP_PRINT,
+            OP_PRINT,
+            OP_PRINT,
+            OP_HALT,
+    };
+
+    executeBytecode(vm, bytecode, vmDebug, NULL);
+
+    for (int i = 1; i < OPERATION_STACK_SIZE; ++i) {
+        TEST_ASSERT_TRUE_MESSAGE(
+                vm->stack[i] == -1,
+                "Expected to be -1"
+        );
+    }
+    TEST_ASSERT_TRUE_MESSAGE(
+            vm->stack[0] == 21,
+            "Expected stack[0] to be 21"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            vm->stackPointer == 0,
+            "Expected stackPointer to be 0"
+    );
+
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[0]->type == TYPE_INT && vmDebug->output[0]->intVal == 21,
+            "Expected output should be 21"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[1]->type == TYPE_INT && vmDebug->output[1]->intVal == -10,
+            "Expected output should be -10"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[2]->type == TYPE_INT && vmDebug->output[2]->intVal == 10,
+            "Expected output should be 10"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[3]->type == TYPE_INT && vmDebug->output[3]->intVal == 0,
+            "Expected output should be 0"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[4]->type == TYPE_INT && vmDebug->output[4]->intVal == 21,
+            "Expected output should be 21"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[5]->type == TYPE_INT && vmDebug->output[5]->intVal == 100,
+            "Expected output should be 100"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[6]->type == TYPE_INT && vmDebug->output[6]->intVal == 200,
+            "Expected output should be 200"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[7]->type == TYPE_INT && vmDebug->output[7]->intVal == 300,
+            "Expected output should be 300"
+    );
+
+    destroyVmDebug(vmDebug);
+    destroyVirtualMachine(vm);
+}
+
+void test_18() {
+    VM* vm = createVirtualMachine(240, 48);
+    VmDebug *vmDebug = calloc(1, sizeof(VmDebug));
+    vmDebug->ipCount = 3;
+    vmDebug->pointers = malloc(sizeof(int32_t) * vmDebug->ipCount);
+    vmDebug->output = calloc(vmDebug->ipCount, sizeof(VmValue*));
+    vmDebug->pointers[0] = 2;
+    vmDebug->pointers[1] = 4;
+    vmDebug->pointers[2] = 14;
+
+    // should print 77 in stdout if VM_INTERPRETER_STDOUT_ENABLED
+    int32_t bytecode[] = {
+            OP_PUSH, 15,
+            OP_PUSH, 11,
+            OP_JNE, 12,
+            OP_PUSH, 100,
+            OP_PUSH, 200,
+            OP_PUSH, 300,
+            OP_PUSH, 77,
+            OP_PRINT,
+            OP_HALT,
+    };
+
+    executeBytecode(vm, bytecode, vmDebug, NULL);
+
+    for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
+        TEST_ASSERT_TRUE_MESSAGE(
+                vm->stack[i] == -1,
+                "Expected to be -1"
+        );
+    }
+    TEST_ASSERT_TRUE_MESSAGE(
+            vm->stackPointer == -1,
+            "Expected stackPointer to be -1"
+    );
+
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[0]->type == TYPE_INT && vmDebug->output[0]->intVal == 15,
+            "Expected output should be 15"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[1]->type == TYPE_INT && vmDebug->output[1]->intVal == 11,
+            "Expected output should be 11"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[2]->type == TYPE_INT && vmDebug->output[2]->intVal == 77,
+            "Expected output should be 77"
+    );
+
+    destroyVmDebug(vmDebug);
+    destroyVirtualMachine(vm);
+}
+
+void test_19() {
+    VM* vm = createVirtualMachine(240, 48);
+    VmDebug *vmDebug = calloc(1, sizeof(VmDebug));
+    vmDebug->ipCount = 3;
+    vmDebug->pointers = malloc(sizeof(int32_t) * vmDebug->ipCount);
+    vmDebug->output = calloc(vmDebug->ipCount, sizeof(VmValue*));
+    vmDebug->pointers[0] = 2;
+    vmDebug->pointers[1] = 4;
+    vmDebug->pointers[2] = 14;
+
+    // should print 77 in stdout if VM_INTERPRETER_STDOUT_ENABLED
+    int32_t bytecode[] = {
+            OP_PUSH, 5,
+            OP_PUSH, 7,
+            OP_JLT, 12,
+            OP_PUSH, 100,
+            OP_PUSH, 200,
+            OP_PUSH, 300,
+            OP_PUSH, 77,
+            OP_PRINT,
+            OP_HALT,
+    };
+
+    executeBytecode(vm, bytecode, vmDebug, NULL);
+
+    for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
+        TEST_ASSERT_TRUE_MESSAGE(
+                vm->stack[i] == -1,
+                "Expected to be -1"
+        );
+    }
+    TEST_ASSERT_TRUE_MESSAGE(
+            vm->stackPointer == -1,
+            "Expected stackPointer to be -1"
+    );
+
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[0]->type == TYPE_INT && vmDebug->output[0]->intVal == 5,
+            "Expected output should be 5"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[1]->type == TYPE_INT && vmDebug->output[1]->intVal == 7,
+            "Expected output should be 7"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[2]->type == TYPE_INT && vmDebug->output[2]->intVal == 77,
+            "Expected output should be 77"
+    );
+
+    destroyVmDebug(vmDebug);
+    destroyVirtualMachine(vm);
+}
+
+void test_20() {
+    VM* vm = createVirtualMachine(240, 48);
+    VmDebug *vmDebug = calloc(1, sizeof(VmDebug));
+    vmDebug->ipCount = 3;
+    vmDebug->pointers = malloc(sizeof(int32_t) * vmDebug->ipCount);
+    vmDebug->output = calloc(vmDebug->ipCount, sizeof(VmValue*));
+    vmDebug->pointers[0] = 2;
+    vmDebug->pointers[1] = 4;
+    vmDebug->pointers[2] = 5;
+
+    // should print 1 in stdout if VM_INTERPRETER_STDOUT_ENABLED
+    int32_t bytecode[] = {
+            OP_PUSH, 5,
+            OP_PUSH, 5,
+            OP_CMP_EQ,
+            OP_PRINT,
+            OP_HALT,
+    };
+
+    executeBytecode(vm, bytecode, vmDebug, NULL);
+
+    for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
+        TEST_ASSERT_TRUE_MESSAGE(
+                vm->stack[i] == -1,
+                "Expected to be -1"
+        );
+    }
+    TEST_ASSERT_TRUE_MESSAGE(
+            vm->stackPointer == -1,
+            "Expected stackPointer to be -1"
+    );
+
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[0]->type == TYPE_INT && vmDebug->output[0]->intVal == 5,
+            "Expected output should be 5"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[1]->type == TYPE_INT && vmDebug->output[1]->intVal == 5,
+            "Expected output should be 5"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[2]->type == TYPE_INT && vmDebug->output[2]->intVal == 1,
+            "Expected output should be 1"
+    );
+
+    destroyVmDebug(vmDebug);
+    destroyVirtualMachine(vm);
+}
+
 int main() {
     UNITY_BEGIN();
 
@@ -1094,6 +1589,15 @@ int main() {
     RUN_TEST(test_9);
     RUN_TEST(test_10);
     RUN_TEST(test_11);
+    RUN_TEST(test_12);
+    RUN_TEST(test_13);
+    RUN_TEST(test_14);
+    RUN_TEST(test_15);
+    RUN_TEST(test_16);
+    RUN_TEST(test_17);
+    RUN_TEST(test_18);
+    RUN_TEST(test_19);
+    RUN_TEST(test_20);
 
     return UNITY_END();
 }
