@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include "../virtual_machine.h"
+#include "vm/src/virtual_machine.h"
 #include "../third_party/unity/unity.h"
 
 void setUp() {}

@@ -32,6 +32,7 @@ void executeBytecode(VM* vm, const int32_t* bytecode, VmDebug* vmDebug, void (*s
         int32_t instruction = bytecode[ip++];
 
         if (vmDebug != NULL) {
+            // TODO: replace with hashmap logic
             for (int i = 0; i < vmDebug->ipCount; ++i) {
                 if (vmDebug->pointers[i] == ip - 1) {
                     if (vmDebug->output == NULL) {

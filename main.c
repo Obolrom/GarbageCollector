@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "virtual_machine.h"
+#include "vm/src/virtual_machine.h"
 
 typedef struct CustomType {
     int test1;
