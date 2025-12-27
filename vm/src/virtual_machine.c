@@ -30,6 +30,21 @@ void executeBytecode(VM* vm, const int32_t* bytecode, VmDebug* vmDebug, void (*s
 
     for (int ip = 0; ;) {
         int32_t instruction = bytecode[ip++];
+
+        if (vmDebug != NULL) {
+            // TODO: replace with hashmap logic
+            for (int i = 0; i < vmDebug->ipCount; ++i) {
+                if (vmDebug->pointers[i] == ip - 1) {
+                    if (vmDebug->output == NULL) {
+                        vmDebug->output = calloc(vmDebug->ipCount, sizeof(VmValue*));
+                    }
+                    VmValue* debugValue = malloc(sizeof(VmValue));
+                    debugValue->type = TYPE_INT;
+                    debugValue->intVal = vm->stack[vm->stackPointer];
+                    vmDebug->output[i] = debugValue;
+                }
+            }
+        }
         if (stackTopValueAtInstructionIndex != NULL) {
             stackTopValueAtInstructionIndex(ip - 1, vm->stack[vm->stackPointer]);
         }
@@ -501,4 +516,19 @@ size_t getUnusedMemoryAmountForTakenHeapBlocks(VM* vm) {
     }
 
     return totalBlocksOccupiedMemory - actualOccupiedMemory;
+}
+
+void destroyVmDebug(VmDebug* vmDebug) {
+    if (vmDebug == NULL) {
+        return;
+    }
+
+    if (vmDebug->output != NULL) {
+        for (int i = 0; i < vmDebug->ipCount; ++i) {
+            free(vmDebug->output[i]);
+        }
+        free(vmDebug->output);
+    }
+    free(vmDebug->pointers);
+    free(vmDebug);
 }

@@ -10,8 +10,8 @@ add_compile_options(-Wall -Wextra -Wpedantic)
 # VM library
 # -----------------------
 add_library(vm
-        virtual_machine.c
-        vm_object.c
+        vm/src/virtual_machine.c
+        vm/src/vm_object.c
         )
 target_include_directories(vm PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}

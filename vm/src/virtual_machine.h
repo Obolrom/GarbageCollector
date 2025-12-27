@@ -110,10 +110,15 @@ struct HeapObject {
 };
 
 typedef struct VirtualMachineDebug {
-    int32_t ip;
-    VmValue* stackValue;
+    int32_t ip; // deprecated
+    VmValue* stackValue; // deprecated
 
-    struct VirtualMachineDebug* next;
+    int32_t ipCount;
+    int32_t* pointers;
+
+    VmValue** output;
+
+    struct VirtualMachineDebug* next; // deprecated
 } VmDebug;
 
 HeapObj* createObject(VM* vm, size_t dataSize, void* data);
@@ -147,3 +152,5 @@ void walkThroughHeap(VM* vm);
 size_t getFreeMemoryAmount(VM* vm);
 
 size_t getUnusedMemoryAmountForTakenHeapBlocks(VM* vm);
+
+void destroyVmDebug(VmDebug* vmDebug);
