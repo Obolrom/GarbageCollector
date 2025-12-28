@@ -1909,7 +1909,7 @@ void test_26() {
     );
     TEST_ASSERT_TRUE_MESSAGE(
             vmDebug->output[2]->type == TYPE_I8 && vmDebug->output[2]->intVal == 754,
-            "Expected output should be 50"
+            "Expected output should be 754"
     );
     TEST_ASSERT_TRUE_MESSAGE(
             vmDebug->output[3]->type == TYPE_I8 && vmDebug->output[3]->intVal == 804,
@@ -2009,6 +2009,104 @@ void test_27() {
     destroyVirtualMachine(vm);
 }
 
+void test_28() {
+    VmDataTypeField *id = createVmDataTypeField(TYPE_I16, "id");
+    VmDataTypeField *age = createVmDataTypeField(TYPE_I8, "age");
+    VmDataTypeField *weight = createVmDataTypeField(TYPE_I16, "weight");
+    VmDataType *person = createVmDataType(3);
+    person->fields[0] = id;
+    person->fields[1] = age;
+    person->fields[2] = weight;
+    VmMetaspace *metaspace = createVmMetaspace(1);
+    metaspace->types[0] = person;
+    VM* vm = createVirtualMachine(240, 48, metaspace);
+    VmDebug *vmDebug = createVmDebug(3);
+    vmDebug->pointers[0] = 62;
+    vmDebug->pointers[1] = 63;
+    vmDebug->pointers[2] = 64;
+
+    // expected stdout 186; 73 + 19 + 94
+    int8_t bytecode[] = {
+            OP_CALL, 4, 0, 2,
+            OP_NEW,
+                0, 0, /* 0  - person data type index in metaspace (2 bytes) */
+                0, 0, /* object address in local vars (2 bytes) */
+            OP_PUSH_I16, 0, 73,
+            OP_SET_FIELD,
+                0, 0, /* 0  - person data type index in metaspace (2 bytes) */
+                0, 0, /* object address in local vars (2 bytes) */
+                0, 0, /* field_id - id (2 bytes) */
+            OP_POP,
+            OP_PUSH_I8, 19,
+            OP_SET_FIELD,
+                0, 0, /* 0  - person data type index in metaspace (2 bytes) */
+                0, 0, /* object address in local vars (2 bytes) */
+                0, 1, /* field_id - age (2 bytes) */
+            OP_POP,
+            OP_PUSH_I16, 0, 94,
+            OP_SET_FIELD,
+                0, 0, /* 0  - person data type index in metaspace (2 bytes) */
+                0, 0, /* object address in local vars (2 bytes) */
+                0, 2, /* field_id - weight (2 bytes) */
+            OP_POP,
+            OP_GET_FIELD,
+                0, 0, /* 0  - person data type index in metaspace (2 bytes) */
+                0, 0, /* object address in local vars (2 bytes) */
+                0, 2, /* field_id - weight (2 bytes) */
+            OP_GET_FIELD,
+                0, 0, /* 0  - person data type index in metaspace (2 bytes) */
+                0, 0, /* object address in local vars (2 bytes) */
+                0, 1, /* field_id - age (2 bytes) */
+            OP_GET_FIELD,
+                0, 0, /* 0  - person data type index in metaspace (2 bytes) */
+                0, 0, /* object address in local vars (2 bytes) */
+                0, 0, /* field_id - age (2 bytes) */
+            OP_ADD, // 62
+            OP_ADD,
+            OP_PRINT,
+            OP_HALT,
+    };
+
+    executeBytecode(vm, bytecode, vmDebug);
+
+    for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
+        TEST_ASSERT_TRUE_MESSAGE(
+                vm->stack[i] == -1,
+                "Expected to be -1"
+        );
+    }
+    TEST_ASSERT_TRUE_MESSAGE(
+            vm->stackPointer == -1,
+            "Expected stackPointer to be -1"
+    );
+
+    TEST_ASSERT_TRUE_MESSAGE(
+            vm->callStack->locals[0].type == TYPE_OBJECT,
+            "Expected type = TYPE_OBJECT"
+    );
+
+    TEST_ASSERT_TRUE_MESSAGE(
+            vm->callStack->locals[0].objectVal->dataSize == 5,
+            "Expected dataSize = 5"
+    );
+
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[0]->intVal == 73,
+            "Expected output should be 73"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[1]->intVal == 92,
+            "Expected output should be 92"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[2]->intVal == 186,
+            "Expected output should be 186"
+    );
+
+    destroyVmDebug(vmDebug);
+    destroyVirtualMachine(vm);
+}
+
 int main() {
     UNITY_BEGIN();
 
@@ -2039,6 +2137,7 @@ int main() {
     RUN_TEST(test_25);
     RUN_TEST(test_26);
     RUN_TEST(test_27);
+    RUN_TEST(test_28);
 
     return UNITY_END();
 }

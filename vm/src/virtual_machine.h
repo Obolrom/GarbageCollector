@@ -39,6 +39,7 @@ enum VirtualMachineOperationalCodes {
 
     OP_NEW,
     OP_SET_FIELD,
+    OP_GET_FIELD,
 
     OP_HALT,
 };

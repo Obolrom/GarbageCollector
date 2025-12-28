@@ -263,7 +263,7 @@ void executeBytecode(VM *vm, const int8_t *bytecode, VmDebug *vmDebug) {
                 currentFrame->argsCount = argsCount;
                 currentFrame->localsCount = localsCount;
                 currentFrame->returnInstructionPointer = ip;
-                currentFrame->locals = malloc(sizeof(VmValue) * (argsCount + localsCount));
+                currentFrame->locals = calloc(argsCount + localsCount, sizeof(VmValue));
 
                 ip = callAddress;
                 break;
@@ -318,6 +318,7 @@ void executeBytecode(VM *vm, const int8_t *bytecode, VmDebug *vmDebug) {
                 break;
             }
             case OP_SET_FIELD: {
+                // TODO: refactor with OP_GET_FIELD; a lot of duplicated lines
                 uint8_t metadataIndexLeft = bytecode[ip++];
                 uint8_t metadataIndexRight = bytecode[ip++];
                 uint16_t metadataIndex = (metadataIndexLeft << 8) + metadataIndexRight;
@@ -345,6 +346,56 @@ void executeBytecode(VM *vm, const int8_t *bytecode, VmDebug *vmDebug) {
                 size_t fieldSize = getVmDataTypeFieldSize(dataTypeField);
 
                 memcpy(regionToWrite, &vm->stack[vm->stackPointer], fieldSize);
+
+                break;
+            }
+            case OP_GET_FIELD: {
+                uint8_t metadataIndexLeft = bytecode[ip++];
+                uint8_t metadataIndexRight = bytecode[ip++];
+                uint16_t metadataIndex = (metadataIndexLeft << 8) + metadataIndexRight;
+
+                uint8_t localVarIndexLeft = bytecode[ip++];
+                uint8_t localVarIndexRight = bytecode[ip++];
+                uint16_t localVarIndex = (localVarIndexLeft << 8) + localVarIndexRight;
+
+                uint8_t fieldIndexLeft = bytecode[ip++];
+                uint8_t fieldIndexRight = bytecode[ip++];
+                uint16_t fieldVarIndex = (fieldIndexLeft << 8) + fieldIndexRight;
+
+                VmDataType *dataType = vm->metaspace->types[metadataIndex];
+                VmDataTypeField *dataTypeField = dataType->fields[fieldVarIndex];
+
+                VmStackFrame* currentFrame = vm->callStack;
+                HeapObj *object = currentFrame->locals[localVarIndex].objectVal;
+
+                int32_t offset = 0;
+                for (int32_t i = 0; i < fieldVarIndex; ++i) {
+                    offset += getVmDataTypeFieldSize(dataType->fields[i]);
+                }
+                void* regionToRead = (uint8_t*) object->data + offset;
+                size_t fieldSize = getVmDataTypeFieldSize(dataTypeField);
+                int32_t data;
+
+                int8_t t1 = 0;
+                int16_t t2 = 0;
+                int32_t t3 = 0;
+                switch (dataTypeField->type) {
+                    case TYPE_I8:
+                        memcpy(&t1, regionToRead, fieldSize);
+                        data = (int32_t) t1;
+                        break;
+                    case TYPE_I16:
+                        memcpy(&t2, regionToRead, fieldSize);
+                        data = (int32_t) t2;
+                        break;
+                    case TYPE_I32:
+                    case TYPE_OBJECT:
+                        memcpy(&t3, regionToRead, fieldSize);
+                        data = (int32_t) t3;
+                        break;
+                }
+
+                vm->stack[++vm->stackPointer] = data;
 
                 break;
             }
