@@ -20,7 +20,7 @@ VM* createVirtualMachine(uint32_t vmHeapSize, uint32_t vmHeapBlockSize) {
     return virtualMachine;
 }
 
-void executeBytecode(VM* vm, const int32_t* bytecode, VmDebug* vmDebug, void (*stackTopValueAtInstructionIndex)(int32_t, int32_t)) {
+void executeBytecode(VM* vm, const int8_t* bytecode, VmDebug* vmDebug, void (*stackTopValueAtInstructionIndex)(int32_t, int32_t)) {
     for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
         vm->stack[i] = -1;
     }
@@ -28,8 +28,8 @@ void executeBytecode(VM* vm, const int32_t* bytecode, VmDebug* vmDebug, void (*s
     printf("VM bytecode execution started\n");
 #endif
 
-    for (int ip = 0; ;) {
-        int32_t instruction = bytecode[ip++];
+    for (int32_t ip = 0; ;) {
+        int8_t instruction = bytecode[ip++];
 
         if (vmDebug != NULL) {
             // TODO: replace with hashmap logic
@@ -50,8 +50,15 @@ void executeBytecode(VM* vm, const int32_t* bytecode, VmDebug* vmDebug, void (*s
         }
 
         switch (instruction) {
-            case OP_PUSH: {
-                vm->stack[++vm->stackPointer] = bytecode[ip++];
+            case OP_PUSH_I8: {
+                vm->stack[++vm->stackPointer] = (int32_t) bytecode[ip++];
+                printf("OP_PUSH_I8 %d\n", vm->stack[vm->stackPointer]);
+                break;
+            }
+            case OP_PUSH_I16: {
+                int8_t left = bytecode[ip++];
+                uint8_t right = bytecode[ip++];
+                vm->stack[++vm->stackPointer] = (int32_t) ((left << 8) + right);
                 break;
             }
             case OP_ADD: {
@@ -76,13 +83,13 @@ void executeBytecode(VM* vm, const int32_t* bytecode, VmDebug* vmDebug, void (*s
                 break;
             }
             case OP_JMP: {
-                int32_t jumpInstructionPointer = bytecode[ip];
+                int32_t jumpInstructionPointer = (int32_t) bytecode[ip];
                 ip = jumpInstructionPointer;
                 break;
             }
             case OP_JZ: {
                 if (vm->stack[vm->stackPointer] == 0) {
-                    ip = bytecode[ip];
+                    ip = (int32_t) bytecode[ip];
                 } else {
                     ip++;
                 }
@@ -91,7 +98,7 @@ void executeBytecode(VM* vm, const int32_t* bytecode, VmDebug* vmDebug, void (*s
             }
             case OP_JNZ: {
                 if (vm->stack[vm->stackPointer] != 0) {
-                    ip = bytecode[ip];
+                    ip = (int32_t) bytecode[ip];
                 } else {
                     ip++;
                 }
@@ -104,7 +111,7 @@ void executeBytecode(VM* vm, const int32_t* bytecode, VmDebug* vmDebug, void (*s
                 int32_t left = vm->stack[vm->stackPointer];
                 vm->stack[vm->stackPointer--] = -1;
                 if (left == right) {
-                    ip = bytecode[ip];
+                    ip = (int32_t) bytecode[ip];
                 } else {
                     ip++;
                 }
@@ -116,7 +123,7 @@ void executeBytecode(VM* vm, const int32_t* bytecode, VmDebug* vmDebug, void (*s
                 int32_t left = vm->stack[vm->stackPointer];
                 vm->stack[vm->stackPointer--] = -1;
                 if (left != right) {
-                    ip = bytecode[ip];
+                    ip = (int32_t) bytecode[ip];
                 } else {
                     ip++;
                 }
@@ -128,7 +135,7 @@ void executeBytecode(VM* vm, const int32_t* bytecode, VmDebug* vmDebug, void (*s
                 int32_t left = vm->stack[vm->stackPointer];
                 vm->stack[vm->stackPointer--] = -1;
                 if (left < right) {
-                    ip = bytecode[ip];
+                    ip = (int32_t) bytecode[ip];
                 } else {
                     ip++;
                 }
@@ -140,7 +147,7 @@ void executeBytecode(VM* vm, const int32_t* bytecode, VmDebug* vmDebug, void (*s
                 int32_t left = vm->stack[vm->stackPointer];
                 vm->stack[vm->stackPointer--] = -1;
                 if (left > right) {
-                    ip = bytecode[ip];
+                    ip = (int32_t) bytecode[ip];
                 } else {
                     ip++;
                 }
@@ -152,7 +159,7 @@ void executeBytecode(VM* vm, const int32_t* bytecode, VmDebug* vmDebug, void (*s
                 int32_t left = vm->stack[vm->stackPointer];
                 vm->stack[vm->stackPointer--] = -1;
                 if (left <= right) {
-                    ip = bytecode[ip];
+                    ip = (int32_t) bytecode[ip];
                 } else {
                     ip++;
                 }
@@ -164,7 +171,7 @@ void executeBytecode(VM* vm, const int32_t* bytecode, VmDebug* vmDebug, void (*s
                 int32_t left = vm->stack[vm->stackPointer];
                 vm->stack[vm->stackPointer--] = -1;
                 if (left <= right) {
-                    ip = bytecode[ip];
+                    ip = (int32_t) bytecode[ip];
                 } else {
                     ip++;
                 }
@@ -244,9 +251,9 @@ void executeBytecode(VM* vm, const int32_t* bytecode, VmDebug* vmDebug, void (*s
             }
             case OP_CALL: {
                 VmStackFrame* prevFrame = vm->callStack;
-                int32_t callAddress = bytecode[ip++];
-                int32_t argsCount = bytecode[ip++];
-                int32_t localsCount = bytecode[ip++];
+                int32_t callAddress = (int32_t) bytecode[ip++];
+                int32_t argsCount = (int32_t) bytecode[ip++];
+                int32_t localsCount = (int32_t) bytecode[ip++];
 
                 VmStackFrame *currentFrame = malloc(sizeof(VmStackFrame));
                 vm->callStack = currentFrame;
@@ -261,7 +268,7 @@ void executeBytecode(VM* vm, const int32_t* bytecode, VmDebug* vmDebug, void (*s
             }
             case OP_STORE: {
                 VmStackFrame* currentFrame = vm->callStack;
-                int32_t varIndex = bytecode[ip++];
+                int32_t varIndex = (int32_t) bytecode[ip++];
                 int32_t value = vm->stack[vm->stackPointer];
                 vm->stack[vm->stackPointer--] = -1;
 
@@ -272,7 +279,7 @@ void executeBytecode(VM* vm, const int32_t* bytecode, VmDebug* vmDebug, void (*s
             }
             case OP_LOAD: {
                 VmStackFrame* currentFrame = vm->callStack;
-                int32_t varIndex = bytecode[ip++];
+                int32_t varIndex = (int32_t) bytecode[ip++];
                 vm->stack[++vm->stackPointer] = currentFrame->locals[varIndex].intVal;
 
                 break;
@@ -326,7 +333,7 @@ VmHeap* createVmHeap(VM* vm) {
     vmHeap->memory = malloc(vm->heapSize * sizeof(uint8_t));
     vmHeap->blockAmount = blockAmount;
     vmHeap->blocks = malloc(blockAmount * sizeof(VmHeapMemBlock));
-    for (int i = 0; i < blockAmount; ++i) {
+    for (uint32_t i = 0; i < blockAmount; ++i) {
         VmHeapMemBlock* block = malloc(sizeof(VmHeapMemBlock));
         block->position = i;
         block->busyIndicator = BI_GREEN;
@@ -357,7 +364,7 @@ void destroyVmHeap(VmHeap* vmHeap) {
 #ifdef VM_LOGS_ENABLED
     printf("VM heap destroying...\n");
 #endif
-    for (int i = 0; i < vmHeap->blockAmount; ++i) {
+    for (uint32_t i = 0; i < vmHeap->blockAmount; ++i) {
         free(vmHeap->blocks[i]);
     }
     free(vmHeap->blocks);
@@ -375,7 +382,7 @@ void* findFreeBlockAddress(VM* vm, size_t objectSize) {
     int counter = 0;
     VmHeapMemBlock* freeMemoryStart = NULL;
 
-    for (int i = 0; i < heap->blockAmount; ++i) {
+    for (uint32_t i = 0; i < heap->blockAmount; ++i) {
         VmHeapMemBlock* block = heap->blocks[i];
 
         if (block->busyIndicator == BI_GREEN) {
@@ -403,7 +410,7 @@ void* findFreeBlockAddress(VM* vm, size_t objectSize) {
 
 uint32_t getOccupiedHeapBlocksAmount(VmHeap* heap) {
     uint32_t occupiedBlocks = 0;
-    for (int i = 0; i < heap->blockAmount; ++i) {
+    for (uint32_t i = 0; i < heap->blockAmount; ++i) {
         if (heap->blocks[i]->busyIndicator == BI_RED) {
             ++occupiedBlocks;
         }
@@ -430,7 +437,7 @@ void printShortHeapStats(VmHeap* heap) {
 void printFullHeapStats(VmHeap* heap) {
     printf("--------------------------------\n");
     printf("Heap blocks dump\n");
-    for (int i = 0; i < heap->blockAmount; ++i) {
+    for (uint32_t i = 0; i < heap->blockAmount; ++i) {
         VmHeapMemBlock* block = heap->blocks[i];
         printf("|Block: %zu\t%d\t", block->position, block->busyIndicator);
         if ((i + 1) % 8 == 0) {

@@ -4,38 +4,39 @@
 #define OPERATION_STACK_SIZE 256
 
 enum VirtualMachineOperationalCodes {
-    OP_ADD = 1000,
-    OP_SUB = 1001,
-    OP_MUL = 1002,
+    OP_ADD = 1,
+    OP_SUB,
+    OP_MUL,
 
-    OP_PUSH = 2000,
-    OP_POP = 2001,
-    OP_DUP = 2002,
+    OP_PUSH_I8,
+    OP_PUSH_I16,
+    OP_POP,
+    OP_DUP,
 
-    OP_PRINT = 3000,
+    OP_PRINT,
 
-    OP_JMP = 4000,
-    OP_JZ = 4001,
-    OP_JNZ = 4002,
-    OP_JEQ = 4003,
-    OP_JNE = 4004,
-    OP_JLT = 4005,
-    OP_JGT = 4006,
-    OP_JLE = 4007,
-    OP_JGE = 4008,
-    OP_CMP_EQ = 4009,
-    OP_CMP_NEQ = 4010,
-    OP_CMP_LT = 4011,
-    OP_CMP_GT = 4012,
-    OP_CMP_LTE = 4013,
-    OP_CMP_GTE = 4014,
+    OP_JMP,
+    OP_JZ,
+    OP_JNZ,
+    OP_JEQ,
+    OP_JNE,
+    OP_JLT,
+    OP_JGT,
+    OP_JLE,
+    OP_JGE,
+    OP_CMP_EQ,
+    OP_CMP_NEQ,
+    OP_CMP_LT,
+    OP_CMP_GT,
+    OP_CMP_LTE,
+    OP_CMP_GTE,
 
-    OP_CALL = 5000,
-    OP_LOAD = 5001,
-    OP_STORE = 5002,
-    OP_RET = 5003,
+    OP_CALL,
+    OP_LOAD,
+    OP_STORE,
+    OP_RET,
 
-    OP_HALT = 9000,
+    OP_HALT,
 };
 
 typedef struct HeapObject HeapObj;
@@ -129,7 +130,7 @@ void compactHeap(VM* vm, void (*func)(HeapObj*));
 
 VM* createVirtualMachine(uint32_t vmHeapSize, uint32_t vmHeapBlockSize);
 
-void executeBytecode(VM* vm, const int32_t* bytecode, VmDebug* vmDebug, void (*stackTopValueAtInstructionIndex)(int32_t, int32_t));
+void executeBytecode(VM* vm, const int8_t* bytecode, VmDebug* vmDebug, void (*stackTopValueAtInstructionIndex)(int32_t, int32_t));
 
 void destroyVirtualMachine(VM* vm);
 

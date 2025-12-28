@@ -44,25 +44,30 @@ typedef struct CustomType3 {
     long test6;
 } Data3;
 
-void test1(VM* vm);
+void demo_vm_heap_wrapper();
+void demo_vm_heap(VM* vm);
 
 int main() {
+    demo_vm_heap_wrapper();
+
+    return 0;
+}
+
+void demo_vm_heap_wrapper() {
     VM* vm = createVirtualMachine(4000, 32);
 
     printShortHeapStats(vm->heap);
     printFullHeapStats(vm->heap);
 
-    test1(vm);
+    demo_vm_heap(vm);
 
     printShortHeapStats(vm->heap);
     printFullHeapStats(vm->heap);
 
     walkThroughHeap(vm);
-
-    return 0;
 }
 
-void test1(VM* vm) {
+void demo_vm_heap(VM* vm) {
     int number = 500;
     float pi = 3.14f;
     short littleNum = 120;
