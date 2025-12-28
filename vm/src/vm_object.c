@@ -24,7 +24,9 @@ HeapObj* createObject(VM* vm, size_t dataSize, void* data) {
     objectStartPtr->deleted = 0;
     objectStartPtr->data = (void*)(objectStartPtr + sizeof(HeapObj));
 
-    memcpy(objectStartPtr->data, data, dataSize);
+    if (data != NULL) {
+        memcpy(objectStartPtr->data, data, dataSize);
+    }
     offset += objectSize;
 #ifdef VM_LOGS_ENABLED
     printf("Actual memory occupied: %zu\t\tfor obj: %zu\n", offset, objectSize);

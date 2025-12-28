@@ -54,7 +54,7 @@ int main() {
 }
 
 void demo_vm_heap_wrapper() {
-    VM* vm = createVirtualMachine(4000, 32);
+    VM* vm = createVirtualMachine(4000, 32, NULL);
 
     printShortHeapStats(vm->heap);
     printFullHeapStats(vm->heap);

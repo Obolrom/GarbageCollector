@@ -6,7 +6,7 @@ void setUp() {}
 void tearDown() {}
 
 void test_1() {
-    VM* vm = createVirtualMachine(320, 32);
+    VM* vm = createVirtualMachine(320, 32, NULL);
 
     int number = 500;
     HeapObj* obj1 = createObject(vm, sizeof(number), &number);
@@ -45,7 +45,7 @@ void test_1() {
 }
 
 void test_2() {
-    VM* vm = createVirtualMachine(320, 32);
+    VM* vm = createVirtualMachine(320, 32, NULL);
 
     int number = 500;
     short littleNum = 120;
@@ -95,7 +95,7 @@ void test_2() {
 }
 
 void test_3() {
-    VM* vm = createVirtualMachine(4000, 16);
+    VM* vm = createVirtualMachine(4000, 16, NULL);
 
     int number = 500;
     short littleNum = 120;
@@ -162,7 +162,7 @@ void test_4() {
         long test6;
     } Data3;
 
-    VM* vm = createVirtualMachine(4000, 16);
+    VM* vm = createVirtualMachine(4000, 16, NULL);
 
     int number = 500;
     short littleNum = 120;
@@ -245,7 +245,7 @@ void test_5() {
         long test6;
     } Data3;
 
-    VM* vm = createVirtualMachine(4000, 16);
+    VM* vm = createVirtualMachine(4000, 16, NULL);
 
     int number = 500;
     short littleNum = 120;
@@ -370,7 +370,7 @@ void test_6() {
         long test6;
     } Data3;
 
-    VM* vm = createVirtualMachine(4000, 16);
+    VM* vm = createVirtualMachine(4000, 16, NULL);
 
     int number = 500;
     short littleNum = 120;
@@ -499,7 +499,7 @@ void test_7() {
         long test6;
     } Data3;
 
-    VM* vm = createVirtualMachine(4000, 16);
+    VM* vm = createVirtualMachine(4000, 16, NULL);
 
     int number = 500;
     short littleNum = 120;
@@ -709,7 +709,7 @@ void test_8() {
         long test8;
     } Data4;
 
-    VM* vm = createVirtualMachine(4000, 16);
+    VM* vm = createVirtualMachine(4000, 16, NULL);
 
     int number = 500;
     short littleNum = 120;
@@ -903,7 +903,7 @@ void test_9() {
     } Data4;
     int passed = 1;
 
-    VM* vm = createVirtualMachine(240, 48);
+    VM* vm = createVirtualMachine(240, 48, NULL);
 
     int number = 500;
     short littleNum = 120;
@@ -972,7 +972,7 @@ void test_9() {
 }
 
 void test_10() {
-    VM* vm = createVirtualMachine(240, 48);
+    VM* vm = createVirtualMachine(240, 48, NULL);
     VmDebug *vmDebug = createVmDebug(4);
     vmDebug->pointers[0] = 2;
     vmDebug->pointers[1] = 4;
@@ -989,7 +989,7 @@ void test_10() {
             OP_HALT,
     };
 
-    executeBytecode(vm, bytecode, vmDebug, NULL);
+    executeBytecode(vm, bytecode, vmDebug);
 
     for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
         TEST_ASSERT_TRUE_MESSAGE(
@@ -1003,19 +1003,19 @@ void test_10() {
     );
 
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[0]->type == TYPE_INT && vmDebug->output[0]->intVal == 10,
+            vmDebug->output[0]->type == TYPE_I8 && vmDebug->output[0]->intVal == 10,
             "Expected output should be 10"
     );
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[1]->type == TYPE_INT && vmDebug->output[1]->intVal == 40,
+            vmDebug->output[1]->type == TYPE_I8 && vmDebug->output[1]->intVal == 40,
             "Expected output should be 40"
     );
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[2]->type == TYPE_INT && vmDebug->output[2]->intVal == 50,
+            vmDebug->output[2]->type == TYPE_I8 && vmDebug->output[2]->intVal == 50,
             "Expected output should be 50"
     );
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[3]->type == TYPE_INT && vmDebug->output[3]->intVal == 100,
+            vmDebug->output[3]->type == TYPE_I8 && vmDebug->output[3]->intVal == 100,
             "Expected output should be 100"
     );
 
@@ -1024,7 +1024,7 @@ void test_10() {
 }
 
 void test_11() {
-    VM* vm = createVirtualMachine(240, 48);
+    VM* vm = createVirtualMachine(240, 48, NULL);
     VmDebug *vmDebug = createVmDebug(4);
     vmDebug->pointers[0] = 2;
     vmDebug->pointers[1] = 4;
@@ -1042,7 +1042,7 @@ void test_11() {
             OP_HALT,
     };
 
-    executeBytecode(vm, bytecode, vmDebug, NULL);
+    executeBytecode(vm, bytecode, vmDebug);
 
     for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
         TEST_ASSERT_TRUE_MESSAGE(
@@ -1056,19 +1056,19 @@ void test_11() {
     );
 
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[0]->type == TYPE_INT && vmDebug->output[0]->intVal == 10,
+            vmDebug->output[0]->type == TYPE_I8 && vmDebug->output[0]->intVal == 10,
             "Expected output should be 10"
     );
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[1]->type == TYPE_INT && vmDebug->output[1]->intVal == 40,
+            vmDebug->output[1]->type == TYPE_I8 && vmDebug->output[1]->intVal == 40,
             "Expected output should be 40"
     );
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[2]->type == TYPE_INT && vmDebug->output[2]->intVal == 50,
+            vmDebug->output[2]->type == TYPE_I8 && vmDebug->output[2]->intVal == 50,
             "Expected output should be 50"
     );
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[3]->type == TYPE_INT && vmDebug->output[3]->intVal == 50,
+            vmDebug->output[3]->type == TYPE_I8 && vmDebug->output[3]->intVal == 50,
             "Expected output should be 100"
     );
 
@@ -1077,7 +1077,7 @@ void test_11() {
 }
 
 void test_12() {
-    VM* vm = createVirtualMachine(240, 48);
+    VM* vm = createVirtualMachine(240, 48, NULL);
     VmDebug *vmDebug = createVmDebug(2);
     vmDebug->pointers[0] = 5;
     vmDebug->pointers[1] = 8;
@@ -1092,7 +1092,7 @@ void test_12() {
             OP_HALT,
     };
 
-    executeBytecode(vm, bytecode, vmDebug, NULL);
+    executeBytecode(vm, bytecode, vmDebug);
 
     for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
         TEST_ASSERT_TRUE_MESSAGE(
@@ -1106,11 +1106,11 @@ void test_12() {
     );
 
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[0]->type == TYPE_INT && vmDebug->output[0]->intVal == 50,
+            vmDebug->output[0]->type == TYPE_I8 && vmDebug->output[0]->intVal == 50,
             "Expected output should be 50"
     );
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[1]->type == TYPE_INT && vmDebug->output[1]->intVal == 30,
+            vmDebug->output[1]->type == TYPE_I8 && vmDebug->output[1]->intVal == 30,
             "Expected output should be 30"
     );
 
@@ -1119,7 +1119,7 @@ void test_12() {
 }
 
 void test_13() {
-    VM* vm = createVirtualMachine(240, 48);
+    VM* vm = createVirtualMachine(240, 48, NULL);
     VmDebug *vmDebug = createVmDebug(2);
     vmDebug->pointers[0] = 7;
     vmDebug->pointers[1] = 19;
@@ -1140,7 +1140,7 @@ void test_13() {
             OP_HALT,
     };
 
-    executeBytecode(vm, bytecode, vmDebug, NULL);
+    executeBytecode(vm, bytecode, vmDebug);
 
     for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
         TEST_ASSERT_TRUE_MESSAGE(
@@ -1154,11 +1154,11 @@ void test_13() {
     );
 
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[0]->type == TYPE_INT && vmDebug->output[0]->intVal == 0,
+            vmDebug->output[0]->type == TYPE_I8 && vmDebug->output[0]->intVal == 0,
             "Expected output should be 0"
     );
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[1]->type == TYPE_INT && vmDebug->output[1]->intVal == 21,
+            vmDebug->output[1]->type == TYPE_I8 && vmDebug->output[1]->intVal == 21,
             "Expected output should be 21"
     );
 
@@ -1167,7 +1167,7 @@ void test_13() {
 }
 
 void test_14() {
-    VM* vm = createVirtualMachine(240, 48);
+    VM* vm = createVirtualMachine(240, 48, NULL);
     VmDebug *vmDebug = createVmDebug(2);
     vmDebug->pointers[0] = 7;
     vmDebug->pointers[1] = 19;
@@ -1188,7 +1188,7 @@ void test_14() {
             OP_HALT,
     };
 
-    executeBytecode(vm, bytecode, vmDebug, NULL);
+    executeBytecode(vm, bytecode, vmDebug);
 
     for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
         TEST_ASSERT_TRUE_MESSAGE(
@@ -1202,11 +1202,11 @@ void test_14() {
     );
 
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[0]->type == TYPE_INT && vmDebug->output[0]->intVal == 9,
+            vmDebug->output[0]->type == TYPE_I8 && vmDebug->output[0]->intVal == 9,
             "Expected output should be 9"
     );
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[1]->type == TYPE_INT && vmDebug->output[1]->intVal == 21,
+            vmDebug->output[1]->type == TYPE_I8 && vmDebug->output[1]->intVal == 21,
             "Expected output should be 21"
     );
 
@@ -1215,7 +1215,7 @@ void test_14() {
 }
 
 void test_15() {
-    VM* vm = createVirtualMachine(240, 48);
+    VM* vm = createVirtualMachine(240, 48, NULL);
     VmDebug *vmDebug = createVmDebug(3);
     vmDebug->pointers[0] = 2;
     vmDebug->pointers[1] = 4;
@@ -1234,7 +1234,7 @@ void test_15() {
             OP_HALT,
     };
 
-    executeBytecode(vm, bytecode, vmDebug, NULL);
+    executeBytecode(vm, bytecode, vmDebug);
 
     for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
         TEST_ASSERT_TRUE_MESSAGE(
@@ -1248,15 +1248,15 @@ void test_15() {
     );
 
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[0]->type == TYPE_INT && vmDebug->output[0]->intVal == 15,
+            vmDebug->output[0]->type == TYPE_I8 && vmDebug->output[0]->intVal == 15,
             "Expected output should be 15"
     );
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[1]->type == TYPE_INT && vmDebug->output[1]->intVal == 15,
+            vmDebug->output[1]->type == TYPE_I8 && vmDebug->output[1]->intVal == 15,
             "Expected output should be 15"
     );
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[2]->type == TYPE_INT && vmDebug->output[2]->intVal == 77,
+            vmDebug->output[2]->type == TYPE_I8 && vmDebug->output[2]->intVal == 77,
             "Expected output should be 77"
     );
 
@@ -1265,7 +1265,7 @@ void test_15() {
 }
 
 void test_16() {
-    VM* vm = createVirtualMachine(240, 48);
+    VM* vm = createVirtualMachine(240, 48, NULL);
     VmDebug *vmDebug = createVmDebug(3);
     vmDebug->pointers[0] = 2;
     vmDebug->pointers[1] = 4;
@@ -1284,7 +1284,7 @@ void test_16() {
             OP_HALT,
     };
 
-    executeBytecode(vm, bytecode, vmDebug, NULL);
+    executeBytecode(vm, bytecode, vmDebug);
 
     for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
         TEST_ASSERT_TRUE_MESSAGE(
@@ -1298,15 +1298,15 @@ void test_16() {
     );
 
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[0]->type == TYPE_INT && vmDebug->output[0]->intVal == 15,
+            vmDebug->output[0]->type == TYPE_I8 && vmDebug->output[0]->intVal == 15,
             "Expected output should be 15"
     );
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[1]->type == TYPE_INT && vmDebug->output[1]->intVal == 11,
+            vmDebug->output[1]->type == TYPE_I8 && vmDebug->output[1]->intVal == 11,
             "Expected output should be 11"
     );
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[2]->type == TYPE_INT && vmDebug->output[2]->intVal == 33,
+            vmDebug->output[2]->type == TYPE_I8 && vmDebug->output[2]->intVal == 33,
             "Expected output should be 33"
     );
 
@@ -1315,7 +1315,7 @@ void test_16() {
 }
 
 void test_17() {
-    VM* vm = createVirtualMachine(240, 48);
+    VM* vm = createVirtualMachine(240, 48, NULL);
     VmDebug *vmDebug = createVmDebug(8);
     vmDebug->pointers[0] = 2;
     vmDebug->pointers[1] = 4;
@@ -1342,7 +1342,7 @@ void test_17() {
             OP_HALT,
     };
 
-    executeBytecode(vm, bytecode, vmDebug, NULL);
+    executeBytecode(vm, bytecode, vmDebug);
 
     for (int i = 1; i < OPERATION_STACK_SIZE; ++i) {
         TEST_ASSERT_TRUE_MESSAGE(
@@ -1360,35 +1360,35 @@ void test_17() {
     );
 
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[0]->type == TYPE_INT && vmDebug->output[0]->intVal == 21,
+            vmDebug->output[0]->type == TYPE_I8 && vmDebug->output[0]->intVal == 21,
             "Expected output should be 21"
     );
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[1]->type == TYPE_INT && vmDebug->output[1]->intVal == -10,
+            vmDebug->output[1]->type == TYPE_I8 && vmDebug->output[1]->intVal == -10,
             "Expected output should be -10"
     );
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[2]->type == TYPE_INT && vmDebug->output[2]->intVal == 10,
+            vmDebug->output[2]->type == TYPE_I8 && vmDebug->output[2]->intVal == 10,
             "Expected output should be 10"
     );
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[3]->type == TYPE_INT && vmDebug->output[3]->intVal == 0,
+            vmDebug->output[3]->type == TYPE_I8 && vmDebug->output[3]->intVal == 0,
             "Expected output should be 0"
     );
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[4]->type == TYPE_INT && vmDebug->output[4]->intVal == 21,
+            vmDebug->output[4]->type == TYPE_I8 && vmDebug->output[4]->intVal == 21,
             "Expected output should be 21"
     );
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[5]->type == TYPE_INT && vmDebug->output[5]->intVal == 100,
+            vmDebug->output[5]->type == TYPE_I8 && vmDebug->output[5]->intVal == 100,
             "Expected output should be 100"
     );
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[6]->type == TYPE_INT && vmDebug->output[6]->intVal == 200,
+            vmDebug->output[6]->type == TYPE_I8 && vmDebug->output[6]->intVal == 200,
             "Expected output should be 200"
     );
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[7]->type == TYPE_INT && vmDebug->output[7]->intVal == 300,
+            vmDebug->output[7]->type == TYPE_I8 && vmDebug->output[7]->intVal == 300,
             "Expected output should be 300"
     );
 
@@ -1397,7 +1397,7 @@ void test_17() {
 }
 
 void test_18() {
-    VM* vm = createVirtualMachine(240, 48);
+    VM* vm = createVirtualMachine(240, 48, NULL);
     VmDebug *vmDebug = createVmDebug(3);
     vmDebug->pointers[0] = 2;
     vmDebug->pointers[1] = 4;
@@ -1416,7 +1416,7 @@ void test_18() {
             OP_HALT,
     };
 
-    executeBytecode(vm, bytecode, vmDebug, NULL);
+    executeBytecode(vm, bytecode, vmDebug);
 
     for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
         TEST_ASSERT_TRUE_MESSAGE(
@@ -1430,15 +1430,15 @@ void test_18() {
     );
 
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[0]->type == TYPE_INT && vmDebug->output[0]->intVal == 15,
+            vmDebug->output[0]->type == TYPE_I8 && vmDebug->output[0]->intVal == 15,
             "Expected output should be 15"
     );
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[1]->type == TYPE_INT && vmDebug->output[1]->intVal == 11,
+            vmDebug->output[1]->type == TYPE_I8 && vmDebug->output[1]->intVal == 11,
             "Expected output should be 11"
     );
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[2]->type == TYPE_INT && vmDebug->output[2]->intVal == 77,
+            vmDebug->output[2]->type == TYPE_I8 && vmDebug->output[2]->intVal == 77,
             "Expected output should be 77"
     );
 
@@ -1447,7 +1447,7 @@ void test_18() {
 }
 
 void test_19() {
-    VM* vm = createVirtualMachine(240, 48);
+    VM* vm = createVirtualMachine(240, 48, NULL);
     VmDebug *vmDebug = createVmDebug(3);
     vmDebug->pointers[0] = 2;
     vmDebug->pointers[1] = 4;
@@ -1466,7 +1466,7 @@ void test_19() {
             OP_HALT,
     };
 
-    executeBytecode(vm, bytecode, vmDebug, NULL);
+    executeBytecode(vm, bytecode, vmDebug);
 
     for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
         TEST_ASSERT_TRUE_MESSAGE(
@@ -1480,15 +1480,15 @@ void test_19() {
     );
 
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[0]->type == TYPE_INT && vmDebug->output[0]->intVal == 5,
+            vmDebug->output[0]->type == TYPE_I8 && vmDebug->output[0]->intVal == 5,
             "Expected output should be 5"
     );
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[1]->type == TYPE_INT && vmDebug->output[1]->intVal == 7,
+            vmDebug->output[1]->type == TYPE_I8 && vmDebug->output[1]->intVal == 7,
             "Expected output should be 7"
     );
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[2]->type == TYPE_INT && vmDebug->output[2]->intVal == 77,
+            vmDebug->output[2]->type == TYPE_I8 && vmDebug->output[2]->intVal == 77,
             "Expected output should be 77"
     );
 
@@ -1497,7 +1497,7 @@ void test_19() {
 }
 
 void test_20() {
-    VM* vm = createVirtualMachine(240, 48);
+    VM* vm = createVirtualMachine(240, 48, NULL);
     VmDebug *vmDebug = createVmDebug(3);
     vmDebug->pointers[0] = 2;
     vmDebug->pointers[1] = 4;
@@ -1512,7 +1512,7 @@ void test_20() {
             OP_HALT,
     };
 
-    executeBytecode(vm, bytecode, vmDebug, NULL);
+    executeBytecode(vm, bytecode, vmDebug);
 
     for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
         TEST_ASSERT_TRUE_MESSAGE(
@@ -1526,15 +1526,15 @@ void test_20() {
     );
 
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[0]->type == TYPE_INT && vmDebug->output[0]->intVal == 5,
+            vmDebug->output[0]->type == TYPE_I8 && vmDebug->output[0]->intVal == 5,
             "Expected output should be 5"
     );
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[1]->type == TYPE_INT && vmDebug->output[1]->intVal == 5,
+            vmDebug->output[1]->type == TYPE_I8 && vmDebug->output[1]->intVal == 5,
             "Expected output should be 5"
     );
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[2]->type == TYPE_INT && vmDebug->output[2]->intVal == 1,
+            vmDebug->output[2]->type == TYPE_I8 && vmDebug->output[2]->intVal == 1,
             "Expected output should be 1"
     );
 
@@ -1543,7 +1543,7 @@ void test_20() {
 }
 
 void test_21() {
-    VM* vm = createVirtualMachine(240, 48);
+    VM* vm = createVirtualMachine(240, 48, NULL);
     VmDebug *vmDebug = createVmDebug(3);
     vmDebug->pointers[0] = 2;
     vmDebug->pointers[1] = 4;
@@ -1558,7 +1558,7 @@ void test_21() {
             OP_HALT,
     };
 
-    executeBytecode(vm, bytecode, vmDebug, NULL);
+    executeBytecode(vm, bytecode, vmDebug);
 
     for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
         TEST_ASSERT_TRUE_MESSAGE(
@@ -1572,15 +1572,15 @@ void test_21() {
     );
 
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[0]->type == TYPE_INT && vmDebug->output[0]->intVal == 5,
+            vmDebug->output[0]->type == TYPE_I8 && vmDebug->output[0]->intVal == 5,
             "Expected output should be 5"
     );
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[1]->type == TYPE_INT && vmDebug->output[1]->intVal == 5,
+            vmDebug->output[1]->type == TYPE_I8 && vmDebug->output[1]->intVal == 5,
             "Expected output should be 5"
     );
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[2]->type == TYPE_INT && vmDebug->output[2]->intVal == 0,
+            vmDebug->output[2]->type == TYPE_I8 && vmDebug->output[2]->intVal == 0,
             "Expected output should be 0"
     );
 
@@ -1589,7 +1589,7 @@ void test_21() {
 }
 
 void test_22() {
-    VM* vm = createVirtualMachine(240, 48);
+    VM* vm = createVirtualMachine(240, 48, NULL);
     VmDebug *vmDebug = createVmDebug(3);
     vmDebug->pointers[0] = 2;
     vmDebug->pointers[1] = 8;
@@ -1612,7 +1612,7 @@ void test_22() {
             OP_RET
     };
 
-    executeBytecode(vm, bytecode, vmDebug, NULL);
+    executeBytecode(vm, bytecode, vmDebug);
 
     for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
         TEST_ASSERT_TRUE_MESSAGE(
@@ -1634,15 +1634,15 @@ void test_22() {
     );
 
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[0]->type == TYPE_INT && vmDebug->output[0]->intVal == 5,
+            vmDebug->output[0]->type == TYPE_I8 && vmDebug->output[0]->intVal == 5,
             "Expected output should be 5"
     );
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[1]->type == TYPE_INT && vmDebug->output[1]->intVal == 15,
+            vmDebug->output[1]->type == TYPE_I8 && vmDebug->output[1]->intVal == 15,
             "Expected output should be 15"
     );
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[2]->type == TYPE_INT && vmDebug->output[2]->intVal == 15,
+            vmDebug->output[2]->type == TYPE_I8 && vmDebug->output[2]->intVal == 15,
             "Expected output should be 15"
     );
 
@@ -1651,7 +1651,7 @@ void test_22() {
 }
 
 void test_23() {
-    VM* vm = createVirtualMachine(240, 48);
+    VM* vm = createVirtualMachine(240, 48, NULL);
     VmDebug *vmDebug = createVmDebug(3);
     vmDebug->pointers[0] = 8;
     vmDebug->pointers[1] = 19;
@@ -1682,7 +1682,7 @@ void test_23() {
             OP_RET,
     };
 
-    executeBytecode(vm, bytecode, vmDebug, NULL);
+    executeBytecode(vm, bytecode, vmDebug);
 
     for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
         TEST_ASSERT_TRUE_MESSAGE(
@@ -1704,15 +1704,15 @@ void test_23() {
     );
 
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[0]->type == TYPE_INT && vmDebug->output[0]->intVal == 7,
+            vmDebug->output[0]->type == TYPE_I8 && vmDebug->output[0]->intVal == 7,
             "Expected output should be 7"
     );
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[1]->type == TYPE_INT && vmDebug->output[1]->intVal == 15,
+            vmDebug->output[1]->type == TYPE_I8 && vmDebug->output[1]->intVal == 15,
             "Expected output should be 15"
     );
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[2]->type == TYPE_INT && vmDebug->output[2]->intVal == 7,
+            vmDebug->output[2]->type == TYPE_I8 && vmDebug->output[2]->intVal == 7,
             "Expected output should be 7"
     );
 
@@ -1721,7 +1721,7 @@ void test_23() {
 }
 
 void test_24() {
-    VM* vm = createVirtualMachine(240, 48);
+    VM* vm = createVirtualMachine(240, 48, NULL);
     VmDebug *vmDebug = createVmDebug(3);
     vmDebug->pointers[0] = 8;
     vmDebug->pointers[1] = 39;
@@ -1757,7 +1757,7 @@ void test_24() {
             OP_RET
     };
 
-    executeBytecode(vm, bytecode, vmDebug, NULL);
+    executeBytecode(vm, bytecode, vmDebug);
 
     for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
         TEST_ASSERT_TRUE_MESSAGE(
@@ -1779,15 +1779,15 @@ void test_24() {
     );
 
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[0]->type == TYPE_INT && vmDebug->output[0]->intVal == 100,
+            vmDebug->output[0]->type == TYPE_I8 && vmDebug->output[0]->intVal == 100,
             "Expected output should be 100"
     );
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[1]->type == TYPE_INT && vmDebug->output[1]->intVal == 20,
+            vmDebug->output[1]->type == TYPE_I8 && vmDebug->output[1]->intVal == 20,
             "Expected output should be 20"
     );
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[2]->type == TYPE_INT && vmDebug->output[2]->intVal == 100,
+            vmDebug->output[2]->type == TYPE_I8 && vmDebug->output[2]->intVal == 100,
             "Expected output should be 100"
     );
 
@@ -1796,7 +1796,7 @@ void test_24() {
 }
 
 void test_25() {
-    VM* vm = createVirtualMachine(240, 48);
+    VM* vm = createVirtualMachine(240, 48, NULL);
     VmDebug *vmDebug = createVmDebug(1);
     vmDebug->pointers[0] = 6;
 
@@ -1835,7 +1835,7 @@ void test_25() {
             OP_RET
     };
 
-    executeBytecode(vm, bytecode, vmDebug, NULL);
+    executeBytecode(vm, bytecode, vmDebug);
 
     for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
         TEST_ASSERT_TRUE_MESSAGE(
@@ -1857,7 +1857,7 @@ void test_25() {
     );
 
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[0]->type == TYPE_INT && vmDebug->output[0]->intVal == 5040,
+            vmDebug->output[0]->type == TYPE_I8 && vmDebug->output[0]->intVal == 5040,
             "Expected output should be 5040"
     );
 
@@ -1869,7 +1869,7 @@ void test_25() {
  * check add with numbers > 2^8
  */
 void test_26() {
-    VM* vm = createVirtualMachine(240, 48);
+    VM* vm = createVirtualMachine(240, 48, NULL);
     VmDebug *vmDebug = createVmDebug(4);
     vmDebug->pointers[0] = 3;
     vmDebug->pointers[1] = 6;
@@ -1886,7 +1886,7 @@ void test_26() {
             OP_HALT,
     };
 
-    executeBytecode(vm, bytecode, vmDebug, NULL);
+    executeBytecode(vm, bytecode, vmDebug);
 
     for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
         TEST_ASSERT_TRUE_MESSAGE(
@@ -1900,23 +1900,112 @@ void test_26() {
     );
 
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[0]->type == TYPE_INT && vmDebug->output[0]->intVal == 283,
+            vmDebug->output[0]->type == TYPE_I8 && vmDebug->output[0]->intVal == 283,
             "Expected output should be 283"
     );
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[1]->type == TYPE_INT && vmDebug->output[1]->intVal == 471,
+            vmDebug->output[1]->type == TYPE_I8 && vmDebug->output[1]->intVal == 471,
             "Expected output should be 471"
     );
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[2]->type == TYPE_INT && vmDebug->output[2]->intVal == 754,
+            vmDebug->output[2]->type == TYPE_I8 && vmDebug->output[2]->intVal == 754,
             "Expected output should be 50"
     );
     TEST_ASSERT_TRUE_MESSAGE(
-            vmDebug->output[3]->type == TYPE_INT && vmDebug->output[3]->intVal == 804,
+            vmDebug->output[3]->type == TYPE_I8 && vmDebug->output[3]->intVal == 804,
             "Expected output should be 804"
     );
 
     destroyVmDebug(vmDebug);
+    destroyVirtualMachine(vm);
+}
+
+void test_27() {
+    VmDataTypeField *id = createVmDataTypeField(TYPE_I16, "id");
+    VmDataTypeField *age = createVmDataTypeField(TYPE_I8, "age");
+    VmDataTypeField *weight = createVmDataTypeField(TYPE_I16, "weight");
+    VmDataType *person = createVmDataType(3);
+    person->fields[0] = id;
+    person->fields[1] = age;
+    person->fields[2] = weight;
+    VmMetaspace *metaspace = createVmMetaspace(1);
+    metaspace->types[0] = person;
+    VM* vm = createVirtualMachine(240, 48, metaspace);
+
+    int8_t bytecode[] = {
+            OP_CALL, 4, 0, 2,
+            OP_NEW,
+                0, 0, /* 0  - person data type index in metaspace (2 bytes) */
+                0, 0, /* object address in local vars (2 bytes) */
+            OP_PUSH_I16, 0, 73,
+            OP_SET_FIELD,
+                0, 0, /* 0  - person data type index in metaspace (2 bytes) */
+                0, 0, /* object address in local vars (2 bytes) */
+                0, 0, /* field_id - id (2 bytes) */
+            OP_POP,
+            OP_PUSH_I8, 19,
+            OP_SET_FIELD,
+                0, 0, /* 0  - person data type index in metaspace (2 bytes) */
+                0, 0, /* object address in local vars (2 bytes) */
+                0, 1, /* field_id - age (2 bytes) */
+            OP_POP,
+            OP_PUSH_I16, 0, 94,
+            OP_SET_FIELD,
+                0, 0, /* 0  - person data type index in metaspace (2 bytes) */
+                0, 0, /* object address in local vars (2 bytes) */
+                0, 2, /* field_id - weight (2 bytes) */
+            OP_PRINT,
+            OP_HALT,
+    };
+
+    executeBytecode(vm, bytecode, NULL);
+
+    for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
+        TEST_ASSERT_TRUE_MESSAGE(
+                vm->stack[i] == -1,
+                "Expected to be -1"
+        );
+    }
+    TEST_ASSERT_TRUE_MESSAGE(
+            vm->stackPointer == -1,
+            "Expected stackPointer to be -1"
+    );
+
+    TEST_ASSERT_TRUE_MESSAGE(
+            vm->callStack->locals[0].type == TYPE_OBJECT,
+            "Expected type = TYPE_OBJECT"
+    );
+
+    TEST_ASSERT_TRUE_MESSAGE(
+            vm->callStack->locals[0].objectVal->dataSize == 5,
+            "Expected dataSize = 5"
+    );
+
+    int8_t id_right = *(int8_t*) vm->callStack->locals[0].objectVal->data;
+    uint8_t id_left = *((uint8_t*) vm->callStack->locals[0].objectVal->data + 1);
+    TEST_ASSERT_TRUE_MESSAGE(
+            ((id_left << 8) + id_right) == 73,
+            "Expected person.id = 73"
+    );
+
+    int8_t age_left = *((int8_t*) vm->callStack->locals[0].objectVal->data + 2);
+    TEST_ASSERT_TRUE_MESSAGE(
+            age_left == 19,
+            "Expected person.age = 19"
+    );
+
+    int8_t weight_right = *((int8_t*) vm->callStack->locals[0].objectVal->data + 3);
+    uint8_t weight_left = *((uint8_t*) vm->callStack->locals[0].objectVal->data + 4);
+    TEST_ASSERT_TRUE_MESSAGE(
+            ((weight_left << 8) + weight_right) == 94,
+            "Expected person.weight = 94"
+    );
+
+    TEST_ASSERT_TRUE_MESSAGE(
+            getOccupiedHeapBlocksAmount(vm->heap) == 1,
+            "Expected occupied heap blocks = 1"
+    );
+
     destroyVirtualMachine(vm);
 }
 
@@ -1949,6 +2038,7 @@ int main() {
     RUN_TEST(test_24);
     RUN_TEST(test_25);
     RUN_TEST(test_26);
+    RUN_TEST(test_27);
 
     return UNITY_END();
 }

@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "virtual_machine.h"
 #include "config.h"
 
-VM* createVirtualMachine(uint32_t vmHeapSize, uint32_t vmHeapBlockSize) {
+VM *createVirtualMachine(uint32_t vmHeapSize, uint32_t vmHeapBlockSize, VmMetaspace *vmMetaspace) {
 #ifdef VM_LOGS_ENABLED
     printf("VM init...\n");
 #endif
@@ -13,6 +14,7 @@ VM* createVirtualMachine(uint32_t vmHeapSize, uint32_t vmHeapBlockSize) {
     virtualMachine->stackPointer = -1;
     virtualMachine->heap = createVmHeap(virtualMachine);
     virtualMachine->callStack = malloc(sizeof(VmStackFrame));
+    virtualMachine->metaspace = vmMetaspace;
 #ifdef VM_LOGS_ENABLED
     printf("VM initialized\n");
 #endif
@@ -20,7 +22,7 @@ VM* createVirtualMachine(uint32_t vmHeapSize, uint32_t vmHeapBlockSize) {
     return virtualMachine;
 }
 
-void executeBytecode(VM* vm, const int8_t* bytecode, VmDebug* vmDebug, void (*stackTopValueAtInstructionIndex)(int32_t, int32_t)) {
+void executeBytecode(VM *vm, const int8_t *bytecode, VmDebug *vmDebug) {
     for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
         vm->stack[i] = -1;
     }
@@ -39,26 +41,26 @@ void executeBytecode(VM* vm, const int8_t* bytecode, VmDebug* vmDebug, void (*st
                         vmDebug->output = calloc(vmDebug->ipCount, sizeof(VmValue*));
                     }
                     VmValue* debugValue = malloc(sizeof(VmValue));
-                    debugValue->type = TYPE_INT;
+                    debugValue->type = TYPE_I8;
                     debugValue->intVal = vm->stack[vm->stackPointer];
                     vmDebug->output[i] = debugValue;
                 }
             }
         }
-        if (stackTopValueAtInstructionIndex != NULL) {
-            stackTopValueAtInstructionIndex(ip - 1, vm->stack[vm->stackPointer]);
-        }
 
         switch (instruction) {
             case OP_PUSH_I8: {
                 vm->stack[++vm->stackPointer] = (int32_t) bytecode[ip++];
-                printf("OP_PUSH_I8 %d\n", vm->stack[vm->stackPointer]);
                 break;
             }
             case OP_PUSH_I16: {
                 int8_t left = bytecode[ip++];
                 uint8_t right = bytecode[ip++];
                 vm->stack[++vm->stackPointer] = (int32_t) ((left << 8) + right);
+                break;
+            }
+            case OP_POP: {
+                vm->stack[vm->stackPointer--] = -1;
                 break;
             }
             case OP_ADD: {
@@ -272,7 +274,7 @@ void executeBytecode(VM* vm, const int8_t* bytecode, VmDebug* vmDebug, void (*st
                 int32_t value = vm->stack[vm->stackPointer];
                 vm->stack[vm->stackPointer--] = -1;
 
-                currentFrame->locals[varIndex].type = TYPE_INT;
+                currentFrame->locals[varIndex].type = TYPE_I8;
                 currentFrame->locals[varIndex].intVal = value;
 
                 break;
@@ -292,6 +294,57 @@ void executeBytecode(VM* vm, const int8_t* bytecode, VmDebug* vmDebug, void (*st
                 if (currentFrame->prevFrame != NULL) {
                     free(currentFrame);
                 }
+
+                break;
+            }
+            case OP_NEW: {
+                uint8_t metadataIndexLeft = bytecode[ip++];
+                uint8_t metadataIndexRight = bytecode[ip++];
+                uint16_t metadataIndex = (metadataIndexLeft << 8) + metadataIndexRight;
+
+                uint8_t localVarIndexLeft = bytecode[ip++];
+                uint8_t localVarIndexRight = bytecode[ip++];
+                uint16_t localVarIndex = (localVarIndexLeft << 8) + localVarIndexRight;
+
+                VmDataType *dataType = vm->metaspace->types[metadataIndex];
+                size_t dataTypeSize = getVmDataTypeSize(dataType);
+
+                HeapObj* object = createObject(vm, dataTypeSize, NULL);
+
+                VmStackFrame* currentFrame = vm->callStack;
+                currentFrame->locals[localVarIndex].type = TYPE_OBJECT;
+                currentFrame->locals[localVarIndex].objectVal = object;
+
+                break;
+            }
+            case OP_SET_FIELD: {
+                uint8_t metadataIndexLeft = bytecode[ip++];
+                uint8_t metadataIndexRight = bytecode[ip++];
+                uint16_t metadataIndex = (metadataIndexLeft << 8) + metadataIndexRight;
+
+                uint8_t localVarIndexLeft = bytecode[ip++];
+                uint8_t localVarIndexRight = bytecode[ip++];
+                uint16_t localVarIndex = (localVarIndexLeft << 8) + localVarIndexRight;
+
+                uint8_t fieldIndexLeft = bytecode[ip++];
+                uint8_t fieldIndexRight = bytecode[ip++];
+                uint16_t fieldVarIndex = (fieldIndexLeft << 8) + fieldIndexRight;
+
+                VmDataType *dataType = vm->metaspace->types[metadataIndex];
+                VmDataTypeField *dataTypeField = dataType->fields[fieldVarIndex];
+
+                VmStackFrame* currentFrame = vm->callStack;
+                HeapObj *object = currentFrame->locals[localVarIndex].objectVal;
+
+                int32_t offset = 0;
+                for (int32_t i = 0; i < fieldVarIndex; ++i) {
+                    offset += getVmDataTypeFieldSize(dataType->fields[i]);
+                }
+                void* regionToWrite = (uint8_t*) object->data + offset;
+
+                size_t fieldSize = getVmDataTypeFieldSize(dataTypeField);
+
+                memcpy(regionToWrite, &vm->stack[vm->stackPointer], fieldSize);
 
                 break;
             }
@@ -351,6 +404,7 @@ void destroyVirtualMachine(VM* vm) {
 #ifdef VM_LOGS_ENABLED
     printf("VM destroying...\n");
 #endif
+    destroyVmMetaspace(vm->metaspace);
     destroyVmHeap(vm->heap);
     free(vm->callStack);
     free(vm);
