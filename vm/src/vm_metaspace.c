@@ -27,6 +27,10 @@ VmDataTypeField *createVmDataTypeField(VmValueType type, char *name) {
 }
 
 void destroyVmMetaspace(VmMetaspace* metaspace) {
+    if (metaspace == NULL) {
+        return;
+    }
+
     for (int i = 0; i < metaspace->dataTypes; ++i) {
         VmDataType *dataType = metaspace->types[i];
 
