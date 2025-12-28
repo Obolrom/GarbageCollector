@@ -982,11 +982,11 @@ void test_10() {
     vmDebug->pointers[2] = 5;
     vmDebug->pointers[3] = 8;
 
-    int32_t bytecode[] = {
-            OP_PUSH, 10,
-            OP_PUSH, 40,
+    int8_t bytecode[] = {
+            OP_PUSH_I8, 10,
+            OP_PUSH_I8, 40,
             OP_ADD,
-            OP_PUSH, 50,
+            OP_PUSH_I8, 50,
             OP_ADD,
             OP_PRINT,
             OP_HALT,
@@ -1037,12 +1037,12 @@ void test_11() {
     vmDebug->pointers[2] = 5;
     vmDebug->pointers[3] = 10;
 
-    int32_t bytecode[] = {
-            OP_PUSH, 10,
-            OP_PUSH, 40,
+    int8_t bytecode[] = {
+            OP_PUSH_I8, 10,
+            OP_PUSH_I8, 40,
             OP_ADD,
             OP_JMP, 10,
-            OP_PUSH, 50,
+            OP_PUSH_I8, 50,
             OP_ADD,
             OP_PRINT,
             OP_HALT,
@@ -1091,11 +1091,11 @@ void test_12() {
     vmDebug->pointers[0] = 5;
     vmDebug->pointers[1] = 8;
 
-    int32_t bytecode[] = {
-            OP_PUSH, 10,
-            OP_PUSH, 40,
+    int8_t bytecode[] = {
+            OP_PUSH_I8, 10,
+            OP_PUSH_I8, 40,
             OP_ADD,
-            OP_PUSH, 20,
+            OP_PUSH_I8, 20,
             OP_SUB,
             OP_PRINT,
             OP_HALT,
@@ -1134,18 +1134,18 @@ void test_13() {
     vmDebug->pointers = malloc(sizeof(int32_t) * vmDebug->ipCount);
     vmDebug->output = calloc(vmDebug->ipCount, sizeof(VmValue*));
     vmDebug->pointers[0] = 7;
-    vmDebug->pointers[1] = 17;
+    vmDebug->pointers[1] = 19;
 
     // should print 21 in stdout if VM_INTERPRETER_STDOUT_ENABLED
-    int32_t bytecode[] = {
-            OP_PUSH, 21,
-            OP_PUSH, -10,
-            OP_PUSH, 10,
+    int8_t bytecode[] = {
+            OP_PUSH_I8, 21,
+            OP_PUSH_I8, -10,
+            OP_PUSH_I8, 10,
             OP_ADD,
-            OP_JZ, 17,
-            OP_PUSH, 100,
-            OP_PUSH, 200,
-            OP_PUSH, 300,
+            OP_JZ, 19,
+            OP_PUSH_I8, 100,
+            OP_PUSH_I16, 0x0, 0xc8, // NOLINT(cppcoreguidelines-narrowing-conversions)
+            OP_PUSH_I16, 0x01, 0x2c,
             OP_PRINT,
             OP_PRINT,
             OP_PRINT,
@@ -1185,18 +1185,18 @@ void test_14() {
     vmDebug->pointers = malloc(sizeof(int32_t) * vmDebug->ipCount);
     vmDebug->output = calloc(vmDebug->ipCount, sizeof(VmValue*));
     vmDebug->pointers[0] = 7;
-    vmDebug->pointers[1] = 17;
+    vmDebug->pointers[1] = 19;
 
     // should print 21 in stdout if VM_INTERPRETER_STDOUT_ENABLED
-    int32_t bytecode[] = {
-            OP_PUSH, 21,
-            OP_PUSH, -1,
-            OP_PUSH, 10,
+    int8_t bytecode[] = {
+            OP_PUSH_I8, 21,
+            OP_PUSH_I8, -1,
+            OP_PUSH_I8, 10,
             OP_ADD,
-            OP_JNZ, 17,
-            OP_PUSH, 100,
-            OP_PUSH, 200,
-            OP_PUSH, 300,
+            OP_JNZ, 19,
+            OP_PUSH_I8, 100,
+            OP_PUSH_I16, 0x0, 0xc8, // NOLINT(cppcoreguidelines-narrowing-conversions)
+            OP_PUSH_I16, 0x01, 0x2c,
             OP_PRINT,
             OP_PRINT,
             OP_PRINT,
@@ -1240,14 +1240,14 @@ void test_15() {
     vmDebug->pointers[2] = 12;
 
     // should print 77 in stdout if VM_INTERPRETER_STDOUT_ENABLED
-    int32_t bytecode[] = {
-            OP_PUSH, 15,
-            OP_PUSH, 15,
+    int8_t bytecode[] = {
+            OP_PUSH_I8, 15,
+            OP_PUSH_I8, 15,
             OP_JEQ, 10,
-            OP_PUSH, 33,
+            OP_PUSH_I8, 33,
             OP_PRINT,
             OP_HALT,
-            OP_PUSH, 77,
+            OP_PUSH_I8, 77,
             OP_PRINT,
             OP_HALT,
     };
@@ -1293,14 +1293,14 @@ void test_16() {
     vmDebug->pointers[2] = 8;
 
     // should print 33 in stdout if VM_INTERPRETER_STDOUT_ENABLED
-    int32_t bytecode[] = {
-            OP_PUSH, 15,
-            OP_PUSH, 11,
+    int8_t bytecode[] = {
+            OP_PUSH_I8, 15,
+            OP_PUSH_I8, 11,
             OP_JEQ, 10,
-            OP_PUSH, 33,
+            OP_PUSH_I8, 33,
             OP_PRINT,
             OP_HALT,
-            OP_PUSH, 77,
+            OP_PUSH_I8, 77,
             OP_PRINT,
             OP_HALT,
     };
@@ -1347,19 +1347,19 @@ void test_17() {
     vmDebug->pointers[3] = 7;
     vmDebug->pointers[4] = 9;
     vmDebug->pointers[5] = 11;
-    vmDebug->pointers[6] = 13;
-    vmDebug->pointers[7] = 15;
+    vmDebug->pointers[6] = 14;
+    vmDebug->pointers[7] = 17;
 
     // should print 300; 200; 100 in stdout if VM_INTERPRETER_STDOUT_ENABLED
-    int32_t bytecode[] = {
-            OP_PUSH, 21,
-            OP_PUSH, -10,
-            OP_PUSH, 10,
+    int8_t bytecode[] = {
+            OP_PUSH_I8, 21,
+            OP_PUSH_I8, -10,
+            OP_PUSH_I8, 10,
             OP_ADD,
-            OP_JNZ, 17,
-            OP_PUSH, 100,
-            OP_PUSH, 200,
-            OP_PUSH, 300,
+            OP_JNZ, 19,
+            OP_PUSH_I8, 100,
+            OP_PUSH_I16, 0x0, 0xc8, // NOLINT(cppcoreguidelines-narrowing-conversions)
+            OP_PUSH_I16, 0x01, 0x2c,
             OP_PRINT,
             OP_PRINT,
             OP_PRINT,
@@ -1428,17 +1428,17 @@ void test_18() {
     vmDebug->output = calloc(vmDebug->ipCount, sizeof(VmValue*));
     vmDebug->pointers[0] = 2;
     vmDebug->pointers[1] = 4;
-    vmDebug->pointers[2] = 14;
+    vmDebug->pointers[2] = 16;
 
     // should print 77 in stdout if VM_INTERPRETER_STDOUT_ENABLED
-    int32_t bytecode[] = {
-            OP_PUSH, 15,
-            OP_PUSH, 11,
-            OP_JNE, 12,
-            OP_PUSH, 100,
-            OP_PUSH, 200,
-            OP_PUSH, 300,
-            OP_PUSH, 77,
+    int8_t bytecode[] = {
+            OP_PUSH_I8, 15,
+            OP_PUSH_I8, 11,
+            OP_JNE, 14,
+            OP_PUSH_I8, 100,
+            OP_PUSH_I16, 0x0, 0xc8, // NOLINT(cppcoreguidelines-narrowing-conversions)
+            OP_PUSH_I16, 0x01, 0x2c,
+            OP_PUSH_I8, 77,
             OP_PRINT,
             OP_HALT,
     };
@@ -1481,17 +1481,17 @@ void test_19() {
     vmDebug->output = calloc(vmDebug->ipCount, sizeof(VmValue*));
     vmDebug->pointers[0] = 2;
     vmDebug->pointers[1] = 4;
-    vmDebug->pointers[2] = 14;
+    vmDebug->pointers[2] = 16;
 
     // should print 77 in stdout if VM_INTERPRETER_STDOUT_ENABLED
-    int32_t bytecode[] = {
-            OP_PUSH, 5,
-            OP_PUSH, 7,
-            OP_JLT, 12,
-            OP_PUSH, 100,
-            OP_PUSH, 200,
-            OP_PUSH, 300,
-            OP_PUSH, 77,
+    int8_t bytecode[] = {
+            OP_PUSH_I8, 5,
+            OP_PUSH_I8, 7,
+            OP_JLT, 14,
+            OP_PUSH_I8, 100,
+            OP_PUSH_I16, 0x0, 0xc8, // NOLINT(cppcoreguidelines-narrowing-conversions)
+            OP_PUSH_I16, 0x01, 0x2c,
+            OP_PUSH_I8, 77,
             OP_PRINT,
             OP_HALT,
     };
@@ -1537,9 +1537,9 @@ void test_20() {
     vmDebug->pointers[2] = 5;
 
     // should print 1 in stdout if VM_INTERPRETER_STDOUT_ENABLED
-    int32_t bytecode[] = {
-            OP_PUSH, 5,
-            OP_PUSH, 5,
+    int8_t bytecode[] = {
+            OP_PUSH_I8, 5,
+            OP_PUSH_I8, 5,
             OP_CMP_EQ,
             OP_PRINT,
             OP_HALT,
@@ -1586,9 +1586,9 @@ void test_21() {
     vmDebug->pointers[2] = 5;
 
     // should print 0 in stdout if VM_INTERPRETER_STDOUT_ENABLED
-    int32_t bytecode[] = {
-            OP_PUSH, 5,
-            OP_PUSH, 5,
+    int8_t bytecode[] = {
+            OP_PUSH_I8, 5,
+            OP_PUSH_I8, 5,
             OP_CMP_NEQ,
             OP_PRINT,
             OP_HALT,
@@ -1635,9 +1635,9 @@ void test_22() {
     vmDebug->pointers[2] = 19;
 
     // should print 15 in stdout if VM_INTERPRETER_STDOUT_ENABLED
-    int32_t bytecode[] = {
-            OP_PUSH, 5,
-            OP_PUSH, 10,
+    int8_t bytecode[] = {
+            OP_PUSH_I8, 5,
+            OP_PUSH_I8, 10,
             OP_CALL, 10, 2, 0,
             OP_PRINT,
             OP_HALT,
@@ -1700,9 +1700,9 @@ void test_23() {
     vmDebug->pointers[2] = 30;
 
     // should print 7 in stdout if VM_INTERPRETER_STDOUT_ENABLED
-    int32_t bytecode[] = {
-            OP_PUSH, 5,
-            OP_PUSH, 10,
+    int8_t bytecode[] = {
+            OP_PUSH_I8, 5,
+            OP_PUSH_I8, 10,
             OP_CALL, 10, 2, 0,
             OP_PRINT,
             OP_HALT,
@@ -1719,7 +1719,7 @@ void test_23() {
             // function 2
             OP_STORE, 0,
             OP_LOAD, 0,
-            OP_PUSH, 8,
+            OP_PUSH_I8, 8,
             OP_SUB,
             OP_RET,
     };
@@ -1773,9 +1773,9 @@ void test_24() {
     vmDebug->pointers[2] = 42;
 
     // should print 20 and 100 in stdout if VM_INTERPRETER_STDOUT_ENABLED
-    int32_t bytecode[] = {
-            OP_PUSH, 0, // sum
-            OP_PUSH, 0, // i
+    int8_t bytecode[] = {
+            OP_PUSH_I8, 0, // sum
+            OP_PUSH_I8, 0, // i
             OP_CALL, 10, 0, 2,
             OP_PRINT,
             OP_HALT,
@@ -1784,15 +1784,15 @@ void test_24() {
             OP_STORE, 0, // sum
             OP_STORE, 1, // i
             OP_LOAD, 1,
-            OP_PUSH, 20,
+            OP_PUSH_I8, 20,
             OP_CMP_LT,
             OP_JZ, 37,   // jump to end of loop
             OP_LOAD, 0,
-            OP_PUSH, 5,
+            OP_PUSH_I8, 5,
             OP_ADD,
             OP_STORE, 0,
             OP_LOAD, 1,
-            OP_PUSH, 1,
+            OP_PUSH_I8, 1,
             OP_ADD,
             OP_STORE, 1,
             OP_JMP, 14,
@@ -1857,8 +1857,8 @@ void test_25() {
             return n * factorial(n - 1);
         }
      */
-    int32_t bytecode[] = {
-            OP_PUSH, 7,
+    int8_t bytecode[] = {
+            OP_PUSH_I8, 7,
             OP_CALL, 8, 1, 0,
             OP_PRINT,
             OP_HALT,
@@ -1866,12 +1866,12 @@ void test_25() {
             // factorial function
             OP_STORE, 0,
             OP_LOAD, 0,
-            OP_PUSH, 1,
+            OP_PUSH_I8, 1,
             OP_CMP_EQ,
             OP_JNZ, 30,
 
             OP_LOAD, 0,
-            OP_PUSH, 1,
+            OP_PUSH_I8, 1,
             OP_SUB,
             OP_CALL, 8, 1, 0, // recursion call
             OP_LOAD, 0,
@@ -1879,7 +1879,7 @@ void test_25() {
             OP_RET,
 
             // base case
-            OP_PUSH, 1,
+            OP_PUSH_I8, 1,
             OP_RET
     };
 
@@ -1907,6 +1907,64 @@ void test_25() {
     TEST_ASSERT_TRUE_MESSAGE(
             vmDebug->output[0]->type == TYPE_INT && vmDebug->output[0]->intVal == 5040,
             "Expected output should be 5040"
+    );
+
+    destroyVmDebug(vmDebug);
+    destroyVirtualMachine(vm);
+}
+
+/**
+ * check add with numbers > 2^8
+ */
+void test_26() {
+    VM* vm = createVirtualMachine(240, 48);
+    VmDebug *vmDebug = malloc(sizeof(VmDebug));
+    vmDebug->ipCount = 4;
+    vmDebug->pointers = malloc(sizeof(int32_t) * vmDebug->ipCount);
+    vmDebug->output = calloc(vmDebug->ipCount, sizeof(VmValue*));
+    vmDebug->pointers[0] = 3;
+    vmDebug->pointers[1] = 6;
+    vmDebug->pointers[2] = 7;
+    vmDebug->pointers[3] = 10;
+
+    int8_t bytecode[] = {
+            OP_PUSH_I16, 1, 27,      // push 283
+            OP_PUSH_I16, 0x01, 0xd7, // push 471  NOLINT(cppcoreguidelines-narrowing-conversions)
+            OP_ADD,
+            OP_PUSH_I8, 50,
+            OP_ADD,
+            OP_PRINT,
+            OP_HALT,
+    };
+
+    executeBytecode(vm, bytecode, vmDebug, NULL);
+
+    for (int i = 0; i < OPERATION_STACK_SIZE; ++i) {
+        TEST_ASSERT_TRUE_MESSAGE(
+                vm->stack[i] == -1,
+                "Expected to be -1"
+        );
+    }
+    TEST_ASSERT_TRUE_MESSAGE(
+            vm->stackPointer == -1,
+            "Expected stackPointer to be -1"
+    );
+
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[0]->type == TYPE_INT && vmDebug->output[0]->intVal == 283,
+            "Expected output should be 283"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[1]->type == TYPE_INT && vmDebug->output[1]->intVal == 471,
+            "Expected output should be 471"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[2]->type == TYPE_INT && vmDebug->output[2]->intVal == 754,
+            "Expected output should be 50"
+    );
+    TEST_ASSERT_TRUE_MESSAGE(
+            vmDebug->output[3]->type == TYPE_INT && vmDebug->output[3]->intVal == 804,
+            "Expected output should be 804"
     );
 
     destroyVmDebug(vmDebug);
@@ -1941,6 +1999,7 @@ int main() {
     RUN_TEST(test_23);
     RUN_TEST(test_24);
     RUN_TEST(test_25);
+    RUN_TEST(test_26);
 
     return UNITY_END();
 }

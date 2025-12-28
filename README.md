@@ -7,7 +7,7 @@
 4. `DIV` - division
 
 ### Stack operations
-1. `OP_PUSH val` - put val (number) to callStack
+1. `OP_PUSH_I8 val` - put val (number) to callStack
 2. `OP_POP` - remove top element from callStack
 3. `OP_DUP` - duplicate a top element
 
