@@ -154,4 +154,6 @@ size_t getFreeMemoryAmount(VM* vm);
 
 size_t getUnusedMemoryAmountForTakenHeapBlocks(VM* vm);
 
+VmDebug* createVmDebug(int32_t ipCount);
+
 void destroyVmDebug(VmDebug* vmDebug);
