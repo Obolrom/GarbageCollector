@@ -525,6 +525,15 @@ size_t getUnusedMemoryAmountForTakenHeapBlocks(VM* vm) {
     return totalBlocksOccupiedMemory - actualOccupiedMemory;
 }
 
+VmDebug* createVmDebug(int32_t ipCount) {
+    VmDebug *vmDebug = calloc(1, sizeof(VmDebug));
+    vmDebug->ipCount = ipCount;
+    vmDebug->pointers = malloc(sizeof(int32_t) * ipCount);
+    vmDebug->output = calloc(ipCount, sizeof(VmValue*));
+
+    return vmDebug;
+}
+
 void destroyVmDebug(VmDebug* vmDebug) {
     if (vmDebug == NULL) {
         return;

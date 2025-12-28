@@ -973,10 +973,7 @@ void test_9() {
 
 void test_10() {
     VM* vm = createVirtualMachine(240, 48);
-    VmDebug *vmDebug = malloc(sizeof(VmDebug));
-    vmDebug->ipCount = 4;
-    vmDebug->pointers = malloc(sizeof(int32_t) * vmDebug->ipCount);
-    vmDebug->output = calloc(vmDebug->ipCount, sizeof(VmValue*));
+    VmDebug *vmDebug = createVmDebug(4);
     vmDebug->pointers[0] = 2;
     vmDebug->pointers[1] = 4;
     vmDebug->pointers[2] = 5;
@@ -1028,10 +1025,7 @@ void test_10() {
 
 void test_11() {
     VM* vm = createVirtualMachine(240, 48);
-    VmDebug *vmDebug = malloc(sizeof(VmDebug));
-    vmDebug->ipCount = 4;
-    vmDebug->pointers = malloc(sizeof(int32_t) * vmDebug->ipCount);
-    vmDebug->output = calloc(vmDebug->ipCount, sizeof(VmValue*));
+    VmDebug *vmDebug = createVmDebug(4);
     vmDebug->pointers[0] = 2;
     vmDebug->pointers[1] = 4;
     vmDebug->pointers[2] = 5;
@@ -1084,10 +1078,7 @@ void test_11() {
 
 void test_12() {
     VM* vm = createVirtualMachine(240, 48);
-    VmDebug *vmDebug = malloc(sizeof(VmDebug));
-    vmDebug->ipCount = 2;
-    vmDebug->pointers = malloc(sizeof(int32_t) * vmDebug->ipCount);
-    vmDebug->output = calloc(vmDebug->ipCount, sizeof(VmValue*));
+    VmDebug *vmDebug = createVmDebug(2);
     vmDebug->pointers[0] = 5;
     vmDebug->pointers[1] = 8;
 
@@ -1129,10 +1120,7 @@ void test_12() {
 
 void test_13() {
     VM* vm = createVirtualMachine(240, 48);
-    VmDebug *vmDebug = malloc(sizeof(VmDebug));
-    vmDebug->ipCount = 2;
-    vmDebug->pointers = malloc(sizeof(int32_t) * vmDebug->ipCount);
-    vmDebug->output = calloc(vmDebug->ipCount, sizeof(VmValue*));
+    VmDebug *vmDebug = createVmDebug(2);
     vmDebug->pointers[0] = 7;
     vmDebug->pointers[1] = 19;
 
@@ -1180,10 +1168,7 @@ void test_13() {
 
 void test_14() {
     VM* vm = createVirtualMachine(240, 48);
-    VmDebug *vmDebug = malloc(sizeof(VmDebug));
-    vmDebug->ipCount = 2;
-    vmDebug->pointers = malloc(sizeof(int32_t) * vmDebug->ipCount);
-    vmDebug->output = calloc(vmDebug->ipCount, sizeof(VmValue*));
+    VmDebug *vmDebug = createVmDebug(2);
     vmDebug->pointers[0] = 7;
     vmDebug->pointers[1] = 19;
 
@@ -1231,10 +1216,7 @@ void test_14() {
 
 void test_15() {
     VM* vm = createVirtualMachine(240, 48);
-    VmDebug *vmDebug = malloc(sizeof(VmDebug));
-    vmDebug->ipCount = 3;
-    vmDebug->pointers = malloc(sizeof(int32_t) * vmDebug->ipCount);
-    vmDebug->output = calloc(vmDebug->ipCount, sizeof(VmValue*));
+    VmDebug *vmDebug = createVmDebug(3);
     vmDebug->pointers[0] = 2;
     vmDebug->pointers[1] = 4;
     vmDebug->pointers[2] = 12;
@@ -1284,10 +1266,7 @@ void test_15() {
 
 void test_16() {
     VM* vm = createVirtualMachine(240, 48);
-    VmDebug *vmDebug = malloc(sizeof(VmDebug));
-    vmDebug->ipCount = 3;
-    vmDebug->pointers = malloc(sizeof(int32_t) * vmDebug->ipCount);
-    vmDebug->output = calloc(vmDebug->ipCount, sizeof(VmValue*));
+    VmDebug *vmDebug = createVmDebug(3);
     vmDebug->pointers[0] = 2;
     vmDebug->pointers[1] = 4;
     vmDebug->pointers[2] = 8;
@@ -1337,10 +1316,7 @@ void test_16() {
 
 void test_17() {
     VM* vm = createVirtualMachine(240, 48);
-    VmDebug *vmDebug = calloc(1, sizeof(VmDebug));
-    vmDebug->ipCount = 8;
-    vmDebug->pointers = malloc(sizeof(int32_t) * vmDebug->ipCount);
-    vmDebug->output = calloc(vmDebug->ipCount, sizeof(VmValue*));
+    VmDebug *vmDebug = createVmDebug(8);
     vmDebug->pointers[0] = 2;
     vmDebug->pointers[1] = 4;
     vmDebug->pointers[2] = 6;
@@ -1422,10 +1398,7 @@ void test_17() {
 
 void test_18() {
     VM* vm = createVirtualMachine(240, 48);
-    VmDebug *vmDebug = calloc(1, sizeof(VmDebug));
-    vmDebug->ipCount = 3;
-    vmDebug->pointers = malloc(sizeof(int32_t) * vmDebug->ipCount);
-    vmDebug->output = calloc(vmDebug->ipCount, sizeof(VmValue*));
+    VmDebug *vmDebug = createVmDebug(3);
     vmDebug->pointers[0] = 2;
     vmDebug->pointers[1] = 4;
     vmDebug->pointers[2] = 16;
@@ -1475,10 +1448,7 @@ void test_18() {
 
 void test_19() {
     VM* vm = createVirtualMachine(240, 48);
-    VmDebug *vmDebug = calloc(1, sizeof(VmDebug));
-    vmDebug->ipCount = 3;
-    vmDebug->pointers = malloc(sizeof(int32_t) * vmDebug->ipCount);
-    vmDebug->output = calloc(vmDebug->ipCount, sizeof(VmValue*));
+    VmDebug *vmDebug = createVmDebug(3);
     vmDebug->pointers[0] = 2;
     vmDebug->pointers[1] = 4;
     vmDebug->pointers[2] = 16;
@@ -1528,10 +1498,7 @@ void test_19() {
 
 void test_20() {
     VM* vm = createVirtualMachine(240, 48);
-    VmDebug *vmDebug = calloc(1, sizeof(VmDebug));
-    vmDebug->ipCount = 3;
-    vmDebug->pointers = malloc(sizeof(int32_t) * vmDebug->ipCount);
-    vmDebug->output = calloc(vmDebug->ipCount, sizeof(VmValue*));
+    VmDebug *vmDebug = createVmDebug(3);
     vmDebug->pointers[0] = 2;
     vmDebug->pointers[1] = 4;
     vmDebug->pointers[2] = 5;
@@ -1577,10 +1544,7 @@ void test_20() {
 
 void test_21() {
     VM* vm = createVirtualMachine(240, 48);
-    VmDebug *vmDebug = calloc(1, sizeof(VmDebug));
-    vmDebug->ipCount = 3;
-    vmDebug->pointers = malloc(sizeof(int32_t) * vmDebug->ipCount);
-    vmDebug->output = calloc(vmDebug->ipCount, sizeof(VmValue*));
+    VmDebug *vmDebug = createVmDebug(3);
     vmDebug->pointers[0] = 2;
     vmDebug->pointers[1] = 4;
     vmDebug->pointers[2] = 5;
@@ -1626,10 +1590,7 @@ void test_21() {
 
 void test_22() {
     VM* vm = createVirtualMachine(240, 48);
-    VmDebug *vmDebug = calloc(1, sizeof(VmDebug));
-    vmDebug->ipCount = 3;
-    vmDebug->pointers = malloc(sizeof(int32_t) * vmDebug->ipCount);
-    vmDebug->output = calloc(vmDebug->ipCount, sizeof(VmValue*));
+    VmDebug *vmDebug = createVmDebug(3);
     vmDebug->pointers[0] = 2;
     vmDebug->pointers[1] = 8;
     vmDebug->pointers[2] = 19;
@@ -1691,10 +1652,7 @@ void test_22() {
 
 void test_23() {
     VM* vm = createVirtualMachine(240, 48);
-    VmDebug *vmDebug = calloc(1, sizeof(VmDebug));
-    vmDebug->ipCount = 3;
-    vmDebug->pointers = malloc(sizeof(int32_t) * vmDebug->ipCount);
-    vmDebug->output = calloc(vmDebug->ipCount, sizeof(VmValue*));
+    VmDebug *vmDebug = createVmDebug(3);
     vmDebug->pointers[0] = 8;
     vmDebug->pointers[1] = 19;
     vmDebug->pointers[2] = 30;
@@ -1764,10 +1722,7 @@ void test_23() {
 
 void test_24() {
     VM* vm = createVirtualMachine(240, 48);
-    VmDebug *vmDebug = calloc(1, sizeof(VmDebug));
-    vmDebug->ipCount = 3;
-    vmDebug->pointers = malloc(sizeof(int32_t) * vmDebug->ipCount);
-    vmDebug->output = calloc(vmDebug->ipCount, sizeof(VmValue*));
+    VmDebug *vmDebug = createVmDebug(3);
     vmDebug->pointers[0] = 8;
     vmDebug->pointers[1] = 39;
     vmDebug->pointers[2] = 42;
@@ -1842,10 +1797,7 @@ void test_24() {
 
 void test_25() {
     VM* vm = createVirtualMachine(240, 48);
-    VmDebug *vmDebug = calloc(1, sizeof(VmDebug));
-    vmDebug->ipCount = 1;
-    vmDebug->pointers = malloc(sizeof(int32_t) * vmDebug->ipCount);
-    vmDebug->output = calloc(vmDebug->ipCount, sizeof(VmValue*));
+    VmDebug *vmDebug = createVmDebug(1);
     vmDebug->pointers[0] = 6;
 
     // should print 5040 in stdout if VM_INTERPRETER_STDOUT_ENABLED
@@ -1918,10 +1870,7 @@ void test_25() {
  */
 void test_26() {
     VM* vm = createVirtualMachine(240, 48);
-    VmDebug *vmDebug = malloc(sizeof(VmDebug));
-    vmDebug->ipCount = 4;
-    vmDebug->pointers = malloc(sizeof(int32_t) * vmDebug->ipCount);
-    vmDebug->output = calloc(vmDebug->ipCount, sizeof(VmValue*));
+    VmDebug *vmDebug = createVmDebug(4);
     vmDebug->pointers[0] = 3;
     vmDebug->pointers[1] = 6;
     vmDebug->pointers[2] = 7;
