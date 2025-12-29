@@ -4,7 +4,15 @@ project(GarbageCollector C)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
-add_compile_options(-Wall -Wextra -Wpedantic)
+add_compile_options(
+        -Wall -Wextra -Wpedantic
+        -Wpointer-arith
+        -Wcast-align
+        -Wstrict-prototypes
+        -Wshadow
+        -Wconversion
+        -Wsign-conversion
+)
 
 # -----------------------
 # VM library
@@ -12,6 +20,7 @@ add_compile_options(-Wall -Wextra -Wpedantic)
 add_library(vm
         vm/src/virtual_machine.c
         vm/src/vm_object.c
+        vm/src/vm_metaspace.c
         )
 target_include_directories(vm PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}

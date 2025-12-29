@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <stddef.h>
+#include "vm_metaspace.h"
 
 #define OPERATION_STACK_SIZE 256
 
@@ -36,6 +37,10 @@ enum VirtualMachineOperationalCodes {
     OP_STORE,
     OP_RET,
 
+    OP_NEW,
+    OP_SET_FIELD,
+    OP_GET_FIELD,
+
     OP_HALT,
 };
 
@@ -46,11 +51,6 @@ typedef enum VirtualMachineReturnCodes {
 
     VM_RC_SUC_OBJ_DELETED,
 } VmRetCode;
-
-typedef enum {
-    TYPE_INT,
-    TYPE_OBJECT,
-} VmValueType;
 
 typedef struct VirtualMachineValue {
     VmValueType type;
@@ -87,6 +87,7 @@ typedef struct HeapMemory {
 typedef struct VirtualMachine {
     VmHeap* heap;
     VmStackFrame* callStack;
+    VmMetaspace* metaspace;
     uint32_t heapSize;
     uint32_t heapBlockSize;
     int32_t stack[OPERATION_STACK_SIZE];
@@ -128,9 +129,9 @@ VmRetCode deleteObject(VM* vm, HeapObj* object);
 
 void compactHeap(VM* vm, void (*func)(HeapObj*));
 
-VM* createVirtualMachine(uint32_t vmHeapSize, uint32_t vmHeapBlockSize);
+VM *createVirtualMachine(uint32_t vmHeapSize, uint32_t vmHeapBlockSize, VmMetaspace *vmMetaspace);
 
-void executeBytecode(VM* vm, const int8_t* bytecode, VmDebug* vmDebug, void (*stackTopValueAtInstructionIndex)(int32_t, int32_t));
+void executeBytecode(VM *vm, const int8_t *bytecode, VmDebug *vmDebug);
 
 void destroyVirtualMachine(VM* vm);
 
