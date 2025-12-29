@@ -47,11 +47,12 @@ VmRetCode deleteObject(VM* vm, HeapObj* object) {
     if (object->objectSize % vm->heapBlockSize > 0) {
         occupiedBlocks++;
     }
-    uint32_t blockOffset = ((void*)object - (void*)vm->heap->memory) / vm->heapBlockSize;
+    uintptr_t diff = (uintptr_t)((uint8_t*)object - (uint8_t*)vm->heap->memory);
+    uint32_t blockOffset = (uint32_t)(diff / vm->heapBlockSize);
     uint32_t curBlockIndex = blockOffset;
     VmHeapMemBlock* blockAddress = vm->heap->blocks[curBlockIndex];
 
-    for (int i = 0; i < occupiedBlocks; ++i) {
+    for (uint32_t i = 0; i < occupiedBlocks; ++i) {
         blockAddress->busyIndicator = BI_GREEN;
         curBlockIndex++;
         blockAddress = vm->heap->blocks[curBlockIndex];
