@@ -345,7 +345,24 @@ void executeBytecode(VM *vm, const int8_t *bytecode, VmDebug *vmDebug) {
 
                 size_t fieldSize = getVmDataTypeFieldSize(dataTypeField);
 
-                memcpy(regionToWrite, &vm->stack[vm->stackPointer], fieldSize);
+                int8_t t1 = 0;
+                int16_t t2 = 0;
+                int32_t t3 = 0;
+                switch (dataTypeField->type) {
+                    case TYPE_I8:
+                        t1 = (int8_t) vm->stack[vm->stackPointer];
+                        memcpy(regionToWrite, &t1, fieldSize);
+                        break;
+                    case TYPE_I16:
+                        t2 = (int16_t) vm->stack[vm->stackPointer];
+                        memcpy(regionToWrite, &t2, fieldSize);
+                        break;
+                    case TYPE_I32:
+                    case TYPE_OBJECT:
+                        t3 = (int32_t) vm->stack[vm->stackPointer];
+                        memcpy(regionToWrite, &t3, fieldSize);
+                        break;
+                }
 
                 break;
             }

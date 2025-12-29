@@ -42,3 +42,7 @@ int32_t getVmDataTypeSize(VmDataType *type);
 int32_t getVmDataTypeFieldSize(VmDataTypeField *field);
 
 void destroyVmMetaspace(VmMetaspace* metaspace);
+
+void printVmDataType(VmDataType *dataType);
+
+void printVmDataTypeField(VmDataTypeField *field);

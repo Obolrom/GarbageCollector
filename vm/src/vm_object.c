@@ -22,7 +22,7 @@ HeapObj* createObject(VM* vm, size_t dataSize, void* data) {
     objectStartPtr->dataSize = dataSize;
     objectStartPtr->marker = marker;
     objectStartPtr->deleted = 0;
-    objectStartPtr->data = (void*)(objectStartPtr + sizeof(HeapObj));
+    objectStartPtr->data = ((uint8_t*) objectStartPtr) + sizeof(HeapObj);
 
     if (data != NULL) {
         memcpy(objectStartPtr->data, data, dataSize);

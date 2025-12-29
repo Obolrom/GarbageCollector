@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "vm_metaspace.h"
 
 VmMetaspace* createVmMetaspace(int16_t dataTypes) {
@@ -37,10 +38,11 @@ void destroyVmMetaspace(VmMetaspace* metaspace) {
         for (int j = 0; j < dataType->fieldsCount; ++j) {
             free(dataType->fields[j]);
         }
-
+        free(dataType->fields);
         free(dataType);
     }
 
+    free(metaspace->types);
     free(metaspace);
 }
 
@@ -67,4 +69,23 @@ int32_t getVmDataTypeFieldSize(VmDataTypeField *field) {
         case TYPE_OBJECT:
             return 4;
     }
+}
+
+void printVmDataType(VmDataType *dataType) {
+    if (dataType == NULL) {
+        return;
+    }
+
+    for (int i = 0; i < dataType->fieldsCount; ++i) {
+        printf("%d. ", i);
+        printVmDataTypeField(dataType->fields[i]);
+    }
+}
+
+void printVmDataTypeField(VmDataTypeField *field) {
+    if (field == NULL) {
+        return;
+    }
+
+    printf("VmDataTypeField: type=%d, name=%s, i8=%d, i16=%d\n", field->type, field->name, field->i8, field->i16);
 }
