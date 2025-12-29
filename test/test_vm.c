@@ -5,7 +5,7 @@
 void setUp() {}
 void tearDown() {}
 
-void test_1() {
+void test_1(void) {
     VM* vm = createVirtualMachine(320, 32, NULL);
 
     int number = 500;
@@ -44,7 +44,7 @@ void test_1() {
     destroyVirtualMachine(vm);
 }
 
-void test_2() {
+void test_2(void) {
     VM* vm = createVirtualMachine(320, 32, NULL);
 
     int number = 500;
@@ -94,7 +94,7 @@ void test_2() {
     destroyVirtualMachine(vm);
 }
 
-void test_3() {
+void test_3(void) {
     VM* vm = createVirtualMachine(4000, 16, NULL);
 
     int number = 500;
@@ -144,7 +144,7 @@ void test_3() {
     destroyVirtualMachine(vm);
 }
 
-void test_4() {
+void test_4(void) {
     typedef struct CustomType {
         int test1;
         long test2;
@@ -227,7 +227,7 @@ void test_4() {
     destroyVirtualMachine(vm);
 }
 
-void test_5() {
+void test_5(void) {
     typedef struct CustomType {
         int test1;
         long test2;
@@ -352,7 +352,7 @@ void test_5() {
     destroyVirtualMachine(vm);
 }
 
-void test_6() {
+void test_6(void) {
     typedef struct CustomType {
         int test1;
         long test2;
@@ -481,7 +481,7 @@ void test_6() {
     destroyVirtualMachine(vm);
 }
 
-void test_7() {
+void test_7(void) {
     typedef struct CustomType {
         int test1;
         long test2;
@@ -680,7 +680,7 @@ void test_7() {
     destroyVirtualMachine(vm);
 }
 
-void test_8() {
+void test_8(void) {
     typedef struct CustomType {
         int test1;
         long test2;
@@ -873,7 +873,7 @@ void test_8() {
     destroyVirtualMachine(vm);
 }
 
-void test_9() {
+void test_9(void) {
     typedef struct CustomType {
         int test1;
         long test2;
@@ -971,7 +971,7 @@ void test_9() {
     destroyVirtualMachine(vm);
 }
 
-void test_10() {
+void test_10(void) {
     VM* vm = createVirtualMachine(240, 48, NULL);
     VmDebug *vmDebug = createVmDebug(4);
     vmDebug->pointers[0] = 2;
@@ -1023,7 +1023,7 @@ void test_10() {
     destroyVirtualMachine(vm);
 }
 
-void test_11() {
+void test_11(void) {
     VM* vm = createVirtualMachine(240, 48, NULL);
     VmDebug *vmDebug = createVmDebug(4);
     vmDebug->pointers[0] = 2;
@@ -1076,7 +1076,7 @@ void test_11() {
     destroyVirtualMachine(vm);
 }
 
-void test_12() {
+void test_12(void) {
     VM* vm = createVirtualMachine(240, 48, NULL);
     VmDebug *vmDebug = createVmDebug(2);
     vmDebug->pointers[0] = 5;
@@ -1118,7 +1118,7 @@ void test_12() {
     destroyVirtualMachine(vm);
 }
 
-void test_13() {
+void test_13(void) {
     VM* vm = createVirtualMachine(240, 48, NULL);
     VmDebug *vmDebug = createVmDebug(2);
     vmDebug->pointers[0] = 7;
@@ -1166,7 +1166,7 @@ void test_13() {
     destroyVirtualMachine(vm);
 }
 
-void test_14() {
+void test_14(void) {
     VM* vm = createVirtualMachine(240, 48, NULL);
     VmDebug *vmDebug = createVmDebug(2);
     vmDebug->pointers[0] = 7;
@@ -1214,7 +1214,7 @@ void test_14() {
     destroyVirtualMachine(vm);
 }
 
-void test_15() {
+void test_15(void) {
     VM* vm = createVirtualMachine(240, 48, NULL);
     VmDebug *vmDebug = createVmDebug(3);
     vmDebug->pointers[0] = 2;
@@ -1264,7 +1264,7 @@ void test_15() {
     destroyVirtualMachine(vm);
 }
 
-void test_16() {
+void test_16(void) {
     VM* vm = createVirtualMachine(240, 48, NULL);
     VmDebug *vmDebug = createVmDebug(3);
     vmDebug->pointers[0] = 2;
@@ -1314,7 +1314,7 @@ void test_16() {
     destroyVirtualMachine(vm);
 }
 
-void test_17() {
+void test_17(void) {
     VM* vm = createVirtualMachine(240, 48, NULL);
     VmDebug *vmDebug = createVmDebug(8);
     vmDebug->pointers[0] = 2;
@@ -1396,7 +1396,7 @@ void test_17() {
     destroyVirtualMachine(vm);
 }
 
-void test_18() {
+void test_18(void) {
     VM* vm = createVirtualMachine(240, 48, NULL);
     VmDebug *vmDebug = createVmDebug(3);
     vmDebug->pointers[0] = 2;
@@ -1446,7 +1446,7 @@ void test_18() {
     destroyVirtualMachine(vm);
 }
 
-void test_19() {
+void test_19(void) {
     VM* vm = createVirtualMachine(240, 48, NULL);
     VmDebug *vmDebug = createVmDebug(3);
     vmDebug->pointers[0] = 2;
@@ -1496,7 +1496,7 @@ void test_19() {
     destroyVirtualMachine(vm);
 }
 
-void test_20() {
+void test_20(void) {
     VM* vm = createVirtualMachine(240, 48, NULL);
     VmDebug *vmDebug = createVmDebug(3);
     vmDebug->pointers[0] = 2;
@@ -1542,7 +1542,7 @@ void test_20() {
     destroyVirtualMachine(vm);
 }
 
-void test_21() {
+void test_21(void) {
     VM* vm = createVirtualMachine(240, 48, NULL);
     VmDebug *vmDebug = createVmDebug(3);
     vmDebug->pointers[0] = 2;
@@ -1588,7 +1588,7 @@ void test_21() {
     destroyVirtualMachine(vm);
 }
 
-void test_22() {
+void test_22(void) {
     VM* vm = createVirtualMachine(240, 48, NULL);
     VmDebug *vmDebug = createVmDebug(3);
     vmDebug->pointers[0] = 2;
@@ -1650,7 +1650,7 @@ void test_22() {
     destroyVirtualMachine(vm);
 }
 
-void test_23() {
+void test_23(void) {
     VM* vm = createVirtualMachine(240, 48, NULL);
     VmDebug *vmDebug = createVmDebug(3);
     vmDebug->pointers[0] = 8;
@@ -1720,7 +1720,7 @@ void test_23() {
     destroyVirtualMachine(vm);
 }
 
-void test_24() {
+void test_24(void) {
     VM* vm = createVirtualMachine(240, 48, NULL);
     VmDebug *vmDebug = createVmDebug(3);
     vmDebug->pointers[0] = 8;
@@ -1795,7 +1795,7 @@ void test_24() {
     destroyVirtualMachine(vm);
 }
 
-void test_25() {
+void test_25(void) {
     VM* vm = createVirtualMachine(240, 48, NULL);
     VmDebug *vmDebug = createVmDebug(1);
     vmDebug->pointers[0] = 6;
@@ -1868,7 +1868,7 @@ void test_25() {
 /**
  * check add with numbers > 2^8
  */
-void test_26() {
+void test_26(void) {
     VM* vm = createVirtualMachine(240, 48, NULL);
     VmDebug *vmDebug = createVmDebug(4);
     vmDebug->pointers[0] = 3;
@@ -1920,7 +1920,7 @@ void test_26() {
     destroyVirtualMachine(vm);
 }
 
-void test_27() {
+void test_27(void) {
     VmDataTypeField *id = createVmDataTypeField(TYPE_I16, "id");
     VmDataTypeField *age = createVmDataTypeField(TYPE_I8, "age");
     VmDataTypeField *weight = createVmDataTypeField(TYPE_I16, "weight");
@@ -2009,7 +2009,7 @@ void test_27() {
     destroyVirtualMachine(vm);
 }
 
-void test_28() {
+void test_28(void) {
     VmDataTypeField *id = createVmDataTypeField(TYPE_I16, "id");
     VmDataTypeField *age = createVmDataTypeField(TYPE_I8, "age");
     VmDataTypeField *weight = createVmDataTypeField(TYPE_I16, "weight");
